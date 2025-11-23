@@ -1,0 +1,39 @@
+[package]
+name = "mytotalconnectcomfort"
+version = "0.1.0"
+edition = "2021"
+authors = ["Divya van Mahajan <divya.vanmahajan@icloud.com>"]
+description = "Async Rust client for the International Honeywell Evohome API (MyTotalConnectComfort) provided by Resideo"
+license = "MIT"
+repository = "https://github.com/divyavanmahajan/mytotalconnectcomfort"
+documentation = "https://docs.rs/mytotalconnectcomfort"
+homepage = "https://github.com/divyavanmahajan/mytotalconnectcomfort"
+keywords = ["honeywell", "evohome", "heating", "api", "async"]
+categories = ["api-bindings", "asynchronous"]
+readme = "README.md"
+rust-version = "1.70"
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json", "cookies"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+thiserror = "1.0"
+async-trait = "0.1"
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockito = "1.2"
+anyhow = "1.0"
+
+[lib]
+name = "mytotalconnectcomfort"
+path = "src/lib.rs"
+
+[[example]]
+name = "basic_usage"
+path = "examples/basic_usage.rs"
+
+[[example]]
+name = "async_example"
+path = "examples/async_example.rs"

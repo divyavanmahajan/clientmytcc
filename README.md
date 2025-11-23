@@ -38,6 +38,39 @@ for location in locations:
 - [Architecture](python/docs/ARCHITECTURE.md) - Design and technical details
 - [Development Guidelines](python/docs/DEVELOPMENT.md) - Contributing and development
 
+### Rust Client Library (`rust/`)
+
+An async Rust client library built on tokio for high-performance applications.
+
+**Features:**
+- Async/await API using tokio
+- Type-safe models with serde
+- Comprehensive error handling with thiserror
+- Zero unsafe code
+- All API endpoints implemented
+
+**Quick Start:**
+```rust
+use mytotalconnectcomfort::Client;
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut client = Client::new();
+    client.login("your-email@example.com", "your-password").await?;
+
+    let locations = client.get_locations().await?;
+    let system = client.get_location_system(&locations[0].id).await?;
+    
+    client.set_zone_temperature(&system.zones[0].id, 21.0, true, 0, 0).await?;
+    Ok(())
+}
+```
+
+**Documentation:**
+- [Rust Client README](rust/README.md) - Installation and usage
+- [API Documentation](https://docs.rs/mytotalconnectcomfort) - Full API docs
+- [Examples](rust/examples/) - Working code examples
+
 ### API Documentation (`api/`)
 
 Complete documentation of the MyTotalConnectComfort API endpoints.
@@ -108,8 +141,45 @@ mytotalconnectcomfort/
 │   ├── docs/                     # Library documentation
 │   ├── pyproject.toml            # Package configuration
 │   └── README.md                 # Library documentation
+├── rust/                         # Rust client library
+│   ├── src/
+│   │   ├── lib.rs                # Library entry point
+│   │   ├── client.rs             # Async API client
+│   │   ├── models.rs             # Data models
+│   │   ├── error.rs              # Error types
+│   │   └── types.rs              # Common types
+│   ├── tests/                    # Integration tests
+│   ├── examples/                 # Usage examples
+│   ├── docs/                     # Library documentation
+│   ├── Cargo.toml                # Package manifest
+│   └── README.md                 # Library documentation
 └── README.md                     # This file
 ```
+
+## Environment Variables
+
+Both libraries can use the same environment variables for testing with real credentials:
+
+- `EVOHOME_EMAIL` - Your MyTotalConnectComfort email address
+- `EVOHOME_PASSWORD` - Your MyTotalConnectComfort password
+
+**Rust** (currently implemented):
+```bash
+export EVOHOME_EMAIL="your-email@example.com"
+export EVOHOME_PASSWORD="your-password"
+cd rust
+cargo test --ignored  # Runs integration tests marked with #[ignore]
+```
+
+**Python** (can be added to test suite):
+```bash
+export EVOHOME_EMAIL="your-email@example.com"
+export EVOHOME_PASSWORD="your-password"
+cd python
+pytest  # Run tests
+```
+
+> **Security Note**: Never commit credentials to version control. Use environment variables or secure credential storage.
 
 ## Features
 
@@ -133,6 +203,22 @@ mytotalconnectcomfort/
 - Custom exception hierarchy
 - Clear error messages
 - Automatic session expiry detection
+
+## Library Comparison
+
+| Feature | Python | Rust |
+|---------|--------|------|
+| **Async** | Sync (blocking) | Async (non-blocking) |
+| **Type Safety** | Runtime (type hints) | Compile-time |
+| **Performance** | Good | Excellent |
+| **Memory Usage** | Higher | Lower |
+| **Dependencies** | `requests` only | `reqwest`, `serde`, `tokio` |
+| **Error Handling** | Exceptions | `Result` types |
+| **Concurrency** | Threading | Async tasks |
+| **Test Coverage** | Comprehensive (25+ tests) | Comprehensive (17+ tests) |
+| **Best For** | Scripts, automation | High-performance apps |
+| **Installation** | `pip install` | `cargo add` |
+| **Package Registry** | PyPI | crates.io |
 
 ## About the System
 
