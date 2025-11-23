@@ -1,0 +1,738 @@
+openapi: 3.0.3
+info:
+  title: MyTotalConnectComfort API
+  description: |
+    API for Honeywell Evohome heating control system via MyTotalConnectComfort portal.
+    This API allows management of heating zones, thermostats, and location settings.
+  version: 1.0.0
+  contact:
+    name: API Support
+    url: https://international.mytotalconnectcomfort.com
+
+servers:
+  - url: https://international.mytotalconnectcomfort.com
+    description: International production server
+
+security:
+  - cookieAuth: []
+  - csrfToken: []
+
+paths:
+  /api/accountApi/login:
+    post:
+      summary: User Login
+      description: Authenticates a user and establishes a session with cookies
+      operationId: login
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          headers:
+            Set-Cookie:
+              description: Session and refresh cookies
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/accountApi/deleteRememberMeCookie:
+    get:
+      summary: Delete Remember Me Cookie
+      description: Removes the "Remember Me" cookie from the session
+      operationId: deleteRememberMeCookie
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Cookie deleted successfully
+          headers:
+            Set-Cookie:
+              description: Expired RememberMeCookie
+              schema:
+                type: string
+
+  /api/locationsapi/getlocations:
+    get:
+      summary: Get All Locations
+      description: Retrieves all locations (homes) associated with the authenticated user
+      operationId: getLocations
+      tags:
+        - Locations
+      responses:
+        '200':
+          description: List of locations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /Api/LocationsApi/GetLocation:
+    get:
+      summary: Get Location Details
+      description: Retrieves detailed information about a specific location
+      operationId: getLocation
+      tags:
+        - Locations
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Location ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Location details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationDetailResponse'
+        '404':
+          description: Location not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /Api/LocationsApi/GetLocationSystem:
+    get:
+      summary: Get Location System
+      description: Retrieves the heating system configuration and zone status for a location
+      operationId: getLocationSystem
+      tags:
+        - Locations
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Location ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Location system details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationSystemResponse'
+        '404':
+          description: Location not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/accountApi/getAccountInformation:
+    get:
+      summary: Get Account Information
+      description: Retrieves account information for the authenticated user
+      operationId: getAccountInformation
+      tags:
+        - Account
+      responses:
+        '200':
+          description: Account information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInfoResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ZonesApi/SetZoneTemperature:
+    post:
+      summary: Set Zone Temperature
+      description: Sets the target temperature for a specific heating zone
+      operationId: setZoneTemperature
+      tags:
+        - Zones
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetTemperatureRequest'
+      responses:
+        '200':
+          description: Temperature set successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SetTemperatureResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: SessionCookie
+      description: Session authentication cookie
+    csrfToken:
+      type: apiKey
+      in: header
+      name: antiForgeryToken
+      description: CSRF protection token for POST requests
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - EmailAddress
+        - Password
+      properties:
+        EmailAddress:
+          type: string
+          format: email
+          example: user@example.com
+        Password:
+          type: string
+          format: password
+          example: password123
+        IsServiceStatusReturned:
+          type: boolean
+          default: true
+        ApiActive:
+          type: boolean
+          default: true
+        ApiDown:
+          type: boolean
+          default: false
+        RedirectUrl:
+          type: string
+          default: ""
+        events:
+          type: array
+          items:
+            type: object
+          default: []
+        formErrors:
+          type: array
+          items:
+            type: object
+          default: []
+
+    LoginResponse:
+      type: object
+      properties:
+        Content:
+          type: object
+          properties:
+            UserId:
+              type: string
+              example: "3194795"
+            DisplayName:
+              type: string
+              example: "TCC User"
+            UserName:
+              type: string
+              example: "user@example.com"
+            LatestEulaAccepted:
+              type: string
+              nullable: true
+            AccessToken:
+              type: string
+            RefreshToken:
+              type: string
+            Reauthenticated:
+              type: boolean
+        Errors:
+          type: array
+          items:
+            type: object
+          nullable: true
+        RedirectUrl:
+          type: string
+          example: "https://international.mytotalconnectcomfort.com/Locations"
+        CurrentCulture:
+          type: string
+          nullable: true
+
+    Zone:
+      type: object
+      properties:
+        Id:
+          type: string
+          example: "5211675"
+        DeviceId:
+          type: integer
+          example: 5211675
+        Name:
+          type: string
+          example: "Livingroom"
+        MacId:
+          type: string
+          example: "B82CA06CB358"
+        ThermostatModelType:
+          type: string
+          example: "Evo"
+        IsAlive:
+          type: boolean
+          example: true
+        HasAlerts:
+          type: boolean
+          example: false
+        HasCommLostAlert:
+          type: boolean
+          example: false
+        HasBatteryLowAlert:
+          type: boolean
+          example: false
+        HasSensorFailureAlert:
+          type: boolean
+          example: false
+        Temperature:
+          type: number
+          format: float
+          example: 19.5
+          description: Current temperature in Celsius
+        MinHeatSetpoint:
+          type: number
+          format: float
+          example: 5.0
+        MaxHeatSetpoint:
+          type: number
+          format: float
+          example: 35.0
+        MaxCoolSetpoint:
+          type: number
+          format: float
+          example: 0.0
+        MinCoolSetpoint:
+          type: number
+          format: float
+          example: 0.0
+        TargetHeatTemperature:
+          type: number
+          format: float
+          example: 21.0
+          description: Target temperature setpoint
+        TargetCoolTemperature:
+          type: number
+          format: float
+          nullable: true
+        SetpointDeadband:
+          type: number
+          format: float
+          nullable: true
+        ThermostatType:
+          type: integer
+          example: 0
+        OverrideActive:
+          type: boolean
+          example: true
+          description: Whether manual override is active
+        HoldTemperaturePermanently:
+          type: boolean
+          example: true
+        SetPointStatus:
+          type: integer
+          example: 2
+          description: 0=following schedule, 2=override
+        NextHeatSetPointTime:
+          type: string
+          format: date-time
+          nullable: true
+        NextHeatSetPointTimeFormatted:
+          type: string
+          nullable: true
+        DomesticHotWaterOn:
+          type: number
+          format: float
+          example: 0.0
+        DomesticHotWaterState:
+          type: integer
+          example: 0
+        CurrentFanSetting:
+          type: string
+          nullable: true
+        FanSettingCanBeChanged:
+          type: boolean
+          nullable: true
+        AllowedFanSettings:
+          type: array
+          items:
+            type: string
+          nullable: true
+        AllowedThermostatModes:
+          type: array
+          items:
+            type: integer
+          example: [3, 4]
+        ThermostatUnits:
+          type: string
+          example: "Celsius"
+          enum: [Celsius, Fahrenheit]
+        ThermostatVersion:
+          type: string
+          example: "EvoTouch"
+
+    Location:
+      type: object
+      properties:
+        Name:
+          type: string
+          example: "Home"
+        Id:
+          type: string
+          example: "1232176"
+        SystemDeviceId:
+          type: string
+          nullable: true
+        TimeOffset:
+          type: integer
+          example: 0
+        HasGateways:
+          type: boolean
+          example: true
+        HasTempControlSystem:
+          type: boolean
+          example: false
+        HasZones:
+          type: boolean
+          example: false
+        IsDefault:
+          type: boolean
+          example: false
+        City:
+          type: string
+          example: "TCC City"
+        Country:
+          type: string
+          example: "Netherlands"
+        CountryId:
+          type: integer
+          nullable: true
+        Postcode:
+          type: string
+          example: "6267BM"
+        StreetAddress:
+          type: string
+          example: "Streetname 123"
+        OwnerName:
+          type: string
+          example: "TCC User Lastname"
+        TimeZoneId:
+          type: string
+          example: "WEuropeStandardTime"
+        TimeZoneDisplayName:
+          type: string
+          example: "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"
+        HeatingSystemType:
+          type: integer
+          example: 1
+        Zones:
+          type: array
+          items:
+            $ref: '#/components/schemas/Zone'
+
+    LocationsResponse:
+      type: object
+      properties:
+        Content:
+          type: object
+          properties:
+            Locations:
+              type: array
+              items:
+                $ref: '#/components/schemas/Location'
+        Errors:
+          type: array
+          items:
+            type: object
+          nullable: true
+        RedirectUrl:
+          type: string
+          nullable: true
+        CurrentCulture:
+          type: string
+          nullable: true
+
+    LocationDetailResponse:
+      type: object
+      properties:
+        Content:
+          type: object
+          properties:
+            NotificationEmails:
+              type: array
+              items:
+                type: string
+                format: email
+            Location:
+              $ref: '#/components/schemas/Location'
+            Gateways:
+              type: array
+              items:
+                type: object
+                properties:
+                  Id:
+                    type: string
+                  MacId:
+                    type: string
+                  Crc:
+                    type: string
+            SecuritySystem:
+              type: object
+              properties:
+                IsLinked:
+                  type: boolean
+        Errors:
+          type: array
+          items:
+            type: object
+          nullable: true
+        RedirectUrl:
+          type: string
+          nullable: true
+        CurrentCulture:
+          type: string
+          nullable: true
+
+    LocationSystemResponse:
+      type: object
+      properties:
+        Content:
+          type: object
+          properties:
+            LocationModel:
+              type: object
+              properties:
+                Id:
+                  type: string
+                SystemDeviceId:
+                  type: string
+                TimeOffset:
+                  type: integer
+                HeatingSystemType:
+                  type: integer
+                Zones:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Zone'
+                QuickActionStatus:
+                  type: object
+                  properties:
+                    QuickAction:
+                      type: integer
+                    QuickActionNextTime:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    HasQuickActionChanged:
+                      type: boolean
+                    IsQuickActionActive:
+                      type: boolean
+                SystemModesConfiguration:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      SystemMode:
+                        type: integer
+                      CanBePermanent:
+                        type: boolean
+                      CanBeTemporary:
+                        type: boolean
+                      MaxDuration:
+                        type: string
+                      TimingResolution:
+                        type: string
+                      TimingMode:
+                        type: integer
+                AllActiveFaults:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      FaultType:
+                        type: integer
+                      Time:
+                        type: string
+                        format: date-time
+                      DeviceType:
+                        type: integer
+                      DeviceId:
+                        type: string
+                      Name:
+                        type: string
+        Errors:
+          type: array
+          items:
+            type: object
+          nullable: true
+        RedirectUrl:
+          type: string
+          nullable: true
+        CurrentCulture:
+          type: string
+          nullable: true
+
+    AccountInfoResponse:
+      type: object
+      properties:
+        Content:
+          type: object
+          properties:
+            UserInfo:
+              type: object
+              properties:
+                UserId:
+                  type: string
+                  nullable: true
+                Username:
+                  type: string
+                FirstName:
+                  type: string
+                LastName:
+                  type: string
+                StreetAddress:
+                  type: string
+                City:
+                  type: string
+                Postcode:
+                  type: string
+                CountryId:
+                  type: integer
+                CountryName:
+                  type: string
+                UserLanguage:
+                  type: integer
+            Friends:
+              type: array
+              items:
+                type: object
+            Contractors:
+              type: array
+              items:
+                type: object
+        Errors:
+          type: array
+          items:
+            type: object
+          nullable: true
+        RedirectUrl:
+          type: string
+          nullable: true
+        CurrentCulture:
+          type: string
+          nullable: true
+
+    SetTemperatureRequest:
+      type: object
+      required:
+        - zoneId
+        - heatTemperature
+        - isPermanent
+        - locationTimeOffsetMinutes
+      properties:
+        zoneId:
+          type: string
+          example: "5211682"
+        heatTemperature:
+          type: string
+          example: "17.5"
+          description: Target temperature in Celsius
+        hotWaterStateIsOn:
+          type: boolean
+          example: false
+        isPermanent:
+          type: boolean
+          example: true
+          description: Whether to hold temperature permanently or temporarily
+        setUntilHours:
+          type: string
+          example: "00"
+          description: Hours until temperature reverts (if not permanent)
+        setUntilMinutes:
+          type: string
+          example: "00"
+          description: Minutes until temperature reverts (if not permanent)
+        locationTimeOffsetMinutes:
+          type: integer
+          example: 60
+          description: Time zone offset in minutes
+        isFollowingSchedule:
+          type: boolean
+          example: false
+
+    SetTemperatureResponse:
+      type: object
+      properties:
+        Errors:
+          type: array
+          items:
+            type: object
+          nullable: true
+        RedirectUrl:
+          type: string
+          nullable: true
+        ReauthenticatedAccessToken:
+          type: string
+          nullable: true
+        ReauthenticatedRefreshToken:
+          type: string
+          nullable: true
+
+    ErrorResponse:
+      type: object
+      properties:
+        Content:
+          type: object
+          nullable: true
+        Errors:
+          type: array
+          items:
+            type: object
+            properties:
+              Code:
+                type: string
+              Message:
+                type: string
+        RedirectUrl:
+          type: string
+          nullable: true
+        CurrentCulture:
+          type: string
+          nullable: true
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Locations
+    description: Location and heating system management
+  - name: Zones
+    description: Heating zone control
+  - name: Account
+    description: User account information
