@@ -202,7 +202,7 @@ All public items have documentation:
 /// # Example
 ///
 /// ```no_run
-/// use mytotalconnectcomfort::Client;
+/// use clientmytcc::Client;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -281,12 +281,12 @@ cargo fmt --check
 
 ```toml
 [package]
-name = "mytotalconnectcomfort"
+name = "clientmytcc"
 version = "0.1.0"
 edition = "2021"
 description = "Async Rust client for International Honeywell Evohome API"
 license = "MIT"
-repository = "https://github.com/divyavanmahajan/mytotalconnectcomfort"
+repository = "https://github.com/divyavanmahajan/clientmytcc"
 keywords = ["honeywell", "evohome", "heating", "api", "async"]
 categories = ["api-bindings", "asynchronous"]
 ```

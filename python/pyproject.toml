@@ -1,16 +1,16 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mytotalconnectcomfort"
+name = "clientmytcc"
 version = "0.1.0"
 description = "Python client library for the International Honeywell Evohome API (MyTotalConnectComfort) provided by Resideo"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Divya van Mahajan", email = "divya.vanmahajan@icloud.com"}
+    {name = "Divya van Mahajan", email = "divyavanmahajan@users.noreply.github.com"}
 ]
 keywords = ["honeywell", "evohome", "heating", "thermostat", "api", "home-automation"]
 classifiers = [
@@ -27,8 +27,15 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "requests>=2.28.0",
+    "requests>=2.31.0",
+    "click>=8.1.0",
+    "rich>=13.0.0",
+    "tomli>=2.0.0; python_version<'3.11'",
+    "tomli-w>=1.0.0",
 ]
+
+[project.scripts]
+evohome = "clientmytcc.cli:cli"
 
 [project.optional-dependencies]
 dev = [

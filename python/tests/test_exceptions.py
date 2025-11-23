@@ -1,7 +1,7 @@
 """Tests for custom exceptions."""
 
 import pytest
-from mytotalconnectcomfort.exceptions import (
+from clientmytcc.exceptions import (
     MyTotalConnectComfortError,
     AuthenticationError,
     APIError,

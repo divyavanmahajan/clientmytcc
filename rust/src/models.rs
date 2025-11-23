@@ -1,7 +1,17 @@
 //! Data models for the MyTotalConnectComfort API.
 
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use crate::types::SetPointStatus;
+
+/// Helper to deserialize null or missing lists as empty vectors
+fn deserialize_null_as_empty<'de, D, T>(deserializer: D) -> Result<Vec<T>, D::Error>
+where
+    D: Deserializer<'de>,
+    T: Deserialize<'de>,
+{
+    let opt = Option::deserialize(deserializer)?;
+    Ok(opt.unwrap_or_default())
+}
 
 /// Represents a heating zone (room) in the system.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -11,7 +21,7 @@ pub struct Zone {
     pub id: String,
     
     /// Zone name (e.g., "Livingroom")
-    pub name: String,
+    pub name: Option<String>,
     
     /// Current temperature in Celsius
     pub temperature: f64,
@@ -70,7 +80,7 @@ pub struct Zone {
     
     /// Temperature units
     #[serde(default)]
-    pub thermostat_units: String,
+    pub thermostat_units: Option<String>,
     
     /// Thermostat version
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -97,10 +107,10 @@ pub struct Gateway {
     pub id: String,
     
     /// MAC address
-    pub mac_id: String,
+    pub mac_id: Option<String>,
     
     /// CRC
-    pub crc: String,
+    pub crc: Option<String>,
 }
 
 /// Represents a location (home) with heating zones.
@@ -111,7 +121,7 @@ pub struct Location {
     pub id: String,
     
     /// Location name
-    pub name: String,
+    pub name: Option<String>,
     
     /// City
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -146,15 +156,15 @@ pub struct Location {
     pub heating_system_type: u8,
     
     /// List of zones
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_as_empty")]
     pub zones: Vec<Zone>,
     
     /// List of gateways
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_as_empty")]
     pub gateways: Vec<Gateway>,
     
     /// Notification emails
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_as_empty")]
     pub notification_emails: Vec<String>,
 }
 
@@ -171,7 +181,7 @@ impl Location {
     /// Find a zone by name (case-insensitive).
     pub fn get_zone_by_name(&self, name: &str) -> Option<&Zone> {
         let name_lower = name.to_lowercase();
-        self.zones.iter().find(|z| z.name.to_lowercase() == name_lower)
+        self.zones.iter().find(|z| z.name.as_deref().map(|n| n.to_lowercase()) == Some(name_lower.clone()))
     }
 }
 
@@ -183,10 +193,10 @@ pub struct UserInfo {
     pub username: String,
     
     /// First name
-    pub first_name: String,
+    pub first_name: Option<String>,
     
     /// Last name
-    pub last_name: String,
+    pub last_name: Option<String>,
     
     /// Street address
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -247,8 +257,8 @@ pub(crate) struct LoginRequest {
 #[serde(rename_all = "PascalCase")]
 pub struct LoginResponse {
     pub user_id: String,
-    pub display_name: String,
-    pub user_name: String,
+    pub display_name: Option<String>,
+    pub user_name: Option<String>,
 }
 
 /// Locations response content.
@@ -263,9 +273,9 @@ pub(crate) struct LocationsContent {
 #[serde(rename_all = "PascalCase")]
 pub(crate) struct LocationDetailContent {
     pub location: Location,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_as_empty")]
     pub gateways: Vec<Gateway>,
-    #[serde(default)]
+    #[serde(default, deserialize_with = "deserialize_null_as_empty")]
     pub notification_emails: Vec<String>,
 }
 

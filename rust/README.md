@@ -2,10 +2,10 @@
 
 An async Rust client library for the **International Honeywell Evohome** heating system, provided by **Resideo** (who licensed the Honeywell brand).
 
-> **Note**: This library is designed for the international Evohome system accessible via `international.mytotalconnectcomfort.com`. North American systems may require different endpoints.
+> **Note**: This library is designed for the international Evohome system accessible via `international.clientmytcc.com`. North American systems may require different endpoints.
 
-[![Crates.io](https://img.shields.io/crates/v/mytotalconnectcomfort.svg)](https://crates.io/crates/mytotalconnectcomfort)
-[![Documentation](https://docs.rs/mytotalconnectcomfort/badge.svg)](https://docs.rs/mytotalconnectcomfort)
+[![Crates.io](https://img.shields.io/crates/v/clientmytcc.svg)](https://crates.io/crates/clientmytcc)
+[![Documentation](https://docs.rs/clientmytcc/badge.svg)](https://docs.rs/clientmytcc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -23,14 +23,14 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-mytotalconnectcomfort = "0.1"
+clientmytcc = "0.1"
 tokio = { version = "1", features = ["full"] }
 ```
 
 ## Quick Start
 
 ```rust
-use mytotalconnectcomfort::Client;
+use clientmytcc::Client;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -67,7 +67,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### Authentication
 
 ```rust
-use mytotalconnectcomfort::{Client, Error};
+use clientmytcc::{Client, Error};
 
 let mut client = Client::new();
 
@@ -176,7 +176,7 @@ println!("Zones: {}", system.zones.len());
 - [User Guide](docs/USER_GUIDE.md) - Comprehensive usage guide
 - [Architecture](docs/ARCHITECTURE.md) - Design and implementation details
 - [Development](docs/DEVELOPMENT.md) - Contributing and development guide
-- [API Documentation](https://docs.rs/mytotalconnectcomfort) - Full API docs
+- [API Documentation](https://docs.rs/clientmytcc) - Full API docs
 
 ## Examples
 
@@ -196,8 +196,8 @@ cargo run --example basic_usage
 ### Setup
 
 ```bash
-git clone https://github.com/divyavanmahajan/mytotalconnectcomfort.git
-cd mytotalconnectcomfort/rust
+git clone https://github.com/divyavanmahajan/clientmytcc.git
+cd clientmytcc/rust
 cargo build
 ```
 
@@ -253,7 +253,7 @@ Use this library at your own risk.
 
 - [API Documentation](../api/API_DOCUMENTATION.md)
 - [OpenAPI Specification](../api/openapi-spec.yaml)
-- [Issue Tracker](https://github.com/divyavanmahajan/mytotalconnectcomfort/issues)
+- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
 
 ## Acknowledgments
 

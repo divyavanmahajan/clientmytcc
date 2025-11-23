@@ -1,6 +1,6 @@
 # Development Guidelines
 
-> **About**: This library provides access to the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). It targets the international API at `international.mytotalconnectcomfort.com`.
+> **About**: This library provides access to the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). It targets the international API at `international.clientmytcc.com`.
 
 ## Getting Started
 
@@ -14,8 +14,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/divyavanmahajan/mytotalconnectcomfort.git
-cd mytotalconnectcomfort/rust
+git clone https://github.com/divyavanmahajan/clientmytcc.git
+cd clientmytcc/rust
 
 # Build the project
 cargo build
@@ -67,7 +67,7 @@ Use rustdoc-style comments for all public items:
 /// # Example
 ///
 /// ```no_run
-/// use mytotalconnectcomfort::Client;
+/// use clientmytcc::Client;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -98,7 +98,7 @@ pub struct Client {
 /// # Example
 ///
 /// ```no_run
-/// # use mytotalconnectcomfort::Client;
+/// # use clientmytcc::Client;
 /// # #[tokio::main]
 /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// # let client = Client::new();
@@ -174,21 +174,57 @@ cargo test test_client_creation
 # Run tests in a specific file
 cargo test --test integration_test
 
-# Run ignored tests (integration tests requiring credentials)
-cargo test -- --ignored
+# Run integration tests (requires credentials)
+cargo test --test cli_integration_test -- --ignored
 
 # Run all tests including ignored
 cargo test -- --include-ignored
 ```
+
+### Integration Tests
+
+Integration tests that interact with the real API are located in `tests/cli_integration_test.rs`. These tests:
+
+- Use real credentials from environment variables
+- Make actual API calls to your heating system
+- Save and restore original temperatures
+- Verify command behavior (boost, eco, vacation)
+- Test the 5°C zone skip logic
+
+**Prerequisites:**
+
+```bash
+export EVOHOME_USER="your-email@example.com"
+export EVOHOME_PASSWORD="your-password"
+```
+
+**Running:**
+
+```bash
+# Run all integration tests
+cargo test --test cli_integration_test -- --ignored
+
+# Run specific integration test
+cargo test --test cli_integration_test test_boost_default_temp -- --ignored
+
+# Run with output
+cargo test --test cli_integration_test -- --ignored --nocapture
+```
+
+**Important:** These tests make real changes to your heating system (but restore them afterward).
 
 ### Test Structure
 
 ```
 rust/
 ├── src/
+│   ├── bin/
+│   │   └── evohome.rs          # CLI with inline unit tests
 │   └── *.rs                    # Unit tests in modules
 └── tests/
-    └── integration_test.rs     # Integration tests
+    ├── integration_test.rs     # Library integration tests
+    ├── cli_integration_test.rs # CLI integration tests (real API)
+    └── README.md               # Test documentation
 ```
 
 ### Writing Tests
@@ -217,7 +253,7 @@ Place integration tests in `tests/` directory:
 
 ```rust
 // In tests/integration_test.rs
-use mytotalconnectcomfort::{Client, Error};
+use clientmytcc::{Client, Error};
 
 #[tokio::test]
 async fn test_unauthenticated_request() {
@@ -350,9 +386,13 @@ rust/
 │   ├── client.rs           # API client
 │   ├── models.rs           # Data models
 │   ├── error.rs            # Error types
-│   └── types.rs            # Common types
+│   ├── types.rs            # Common types
+│   └── bin/
+│       └── evohome.rs      # CLI binary
 ├── tests/
-│   └── integration_test.rs # Integration tests
+│   ├── integration_test.rs     # Library integration tests
+│   ├── cli_integration_test.rs # CLI integration tests
+│   └── README.md               # Test documentation
 ├── examples/
 │   ├── basic_usage.rs      # Basic example
 │   └── async_example.rs    # Async example
@@ -562,7 +602,7 @@ With LLDB:
 cargo build
 
 # Run with lldb
-rust-lldb target/debug/mytotalconnectcomfort
+rust-lldb target/debug/clientmytcc
 
 # Set breakpoint
 (lldb) b client.rs:100
@@ -663,6 +703,99 @@ criterion_group!(benches, benchmark_function);
 criterion_main!(benches);
 ```
 
+## CLI Development
+
+### CLI Features
+
+The `evohome` CLI (`src/bin/evohome.rs`) includes several advanced features:
+
+#### Session Management
+- Saves session cookies to `~/.config/clientmytcc/session.json`
+- Auto-validates session on startup
+- Falls back to environment variables if session expired
+- Supports manual login with `evohome login`
+
+#### Smart Defaults
+- Auto-selects location if only one exists
+- Auto-selects zone if only one exists
+- Matches zone names by prefix (e.g., "liv" matches "Livingroom")
+
+#### Temperature Parsing
+- Accepts Celsius: `20C`, `20.5C`, or just `20`
+- Accepts Fahrenheit: `68F`, `68.5F`
+- Automatically converts to Celsius for API
+
+#### Smart Zone Skip Logic
+- Zones at 5°C (off/frost protection) are skipped by default
+- Use `--override` flag to force changes on 5°C zones
+- Applies to `boost`, `eco`, and `vacation` commands
+
+#### Auto-Status Display
+- `boost`, `eco`, and `vacation` commands automatically show status after execution
+- Provides immediate feedback on temperature changes
+
+#### Command Arguments
+- Temperature is a positional argument: `evohome boost 20C`
+- Location is an option: `evohome boost 20C --location-id 12345` or `-l 12345`
+- Duration for boost: `evohome boost 20C --duration 3`
+
+### CLI Testing
+
+Test CLI commands manually:
+
+```bash
+# Build and install
+cargo install --path .
+
+# Test commands
+evohome login
+evohome status
+evohome boost 20C
+evohome eco 18C
+evohome vacation 12C
+evohome set living 21C
+
+# Test with options
+evohome boost 20C --duration 3
+evohome eco 18C --override
+evohome status --format json
+```
+
+### Adding CLI Commands
+
+1. **Define command in enum:**
+```rust
+#[derive(Subcommand)]
+enum Commands {
+    /// Description of command
+    NewCommand {
+        #[arg(short, long)]
+        location_id: Option<String>,
+        #[arg(default_value = "default")]
+        param: String,
+    },
+}
+```
+
+2. **Implement command handler:**
+```rust
+Commands::NewCommand { location_id, param } => {
+    let client = get_authenticated_client().await?;
+    let location_id = select_location(&client, location_id).await?;
+    // Implementation
+}
+```
+
+3. **Add tests:**
+```rust
+#[tokio::test]
+#[ignore]
+async fn test_new_command() {
+    let client = get_test_client().await.unwrap();
+    // Test implementation
+}
+```
+
 ## Resources
 
 - [The Rust Programming Language](https://doc.rust-lang.org/book/)
@@ -671,11 +804,12 @@ criterion_main!(benches);
 - [tokio Documentation](https://tokio.rs/)
 - [reqwest Documentation](https://docs.rs/reqwest/)
 - [serde Documentation](https://serde.rs/)
+- [clap Documentation](https://docs.rs/clap/) (CLI framework)
 
 ## Getting Help
 
 - [User Guide](USER_GUIDE.md)
 - [Architecture](ARCHITECTURE.md)
-- [Rust API Docs](https://docs.rs/mytotalconnectcomfort)
-- [Issue Tracker](https://github.com/divyavanmahajan/mytotalconnectcomfort/issues)
+- [Rust API Docs](https://docs.rs/clientmytcc)
+- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
 - [Rust Users Forum](https://users.rust-lang.org/)

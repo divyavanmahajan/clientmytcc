@@ -1,6 +1,6 @@
 //! Basic usage example for the MyTotalConnectComfort API client.
 
-use mytotalconnectcomfort::{Client, Error};
+use clientmytcc::{Client, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -14,8 +14,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("Logging in...");
     match client.login(email, password).await {
-        Ok(user_data) => {
-            println!("[OK] Logged in as: {}", user_data.display_name);
+        Ok((user_data, _cookies)) => {
+            println!("[OK] Logged in as: {}", user_data.display_name.as_deref().unwrap_or("Unknown"));
         }
         Err(Error::Authentication(msg)) => {
             eprintln!("[ERROR] Authentication failed: {}", msg);
@@ -31,17 +31,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("[OK] Found {} location(s)\n", locations.len());
 
     for location in &locations {
-        println!("Location: {}", location.name);
+        println!("Location: {}", location.name.as_deref().unwrap_or("Unknown"));
         println!("  ID: {}", location.id);
         if let Some(city) = &location.city {
             if let Some(country) = &location.country {
                 println!("  Address: {}, {}", city, country);
             }
         }
-        println!("  Zones: {}\n", location.zones.len());
+        println!("{}: {} zones", location.name.as_deref().unwrap_or("Unknown"), location.zones.len());
 
         // Get detailed system information for this location
-        println!("Fetching system details for {}...", location.name);
+        println!("Fetching system details for {}...", location.name.as_deref().unwrap_or("Unknown"));
         let system = client.get_location_system(&location.id).await?;
 
         // Display zone information
@@ -57,7 +57,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 ""
             };
 
-            println!("  Zone: {}{}{}", zone.name, status, override_info);
+            println!("  Zone: {}{}{}", zone.name.as_deref().unwrap_or("Unknown"), status, override_info);
             println!("    Current: {}°C", zone.temperature);
             println!("    Target:  {}°C", zone.target_heat_temperature);
             println!(
@@ -77,7 +77,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             println!(
                 "Example: Setting {} to {}°C...",
-                example_zone.name, new_temp
+                example_zone.name.as_deref().unwrap_or("Unknown"), new_temp
             );
             match client
                 .set_zone_temperature(&example_zone.id, new_temp, true, 0, 0)
@@ -95,7 +95,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let account = client.get_account_info().await?;
     println!(
         "[OK] Account: {} {}",
-        account.first_name, account.last_name
+        account.first_name.as_deref().unwrap_or(""), account.last_name.as_deref().unwrap_or("")
     );
     println!("  Email: {}", account.username);
     if let (Some(city), Some(country)) = (&account.city, &account.country_name) {

@@ -104,6 +104,14 @@ class Client:
         self._authenticated = True
         return data.get("Content", {})
     
+    def logout(self):
+        """Logout from the API.
+        
+        This invalidates the current session.
+        """
+        logout_url = f"{self.BASE_URL}/Account/Logout?message=logout"
+        self.session.get(logout_url)
+    
     def _extract_anti_forgery_token(self, html_content: str) -> None:
         """Extract the anti-forgery token from HTML content."""
         # Look for the token in the page - it's typically in a script or meta tag

@@ -1,8 +1,8 @@
 [package]
-name = "mytotalconnectcomfort"
+name = "clientmytcc"
 version = "0.1.0"
 edition = "2021"
-authors = ["Divya van Mahajan <divya.vanmahajan@icloud.com>"]
+authors = ["Divya van Mahajan <divyavanmahajan@users.noreply.github.com>"]
 description = "Async Rust client for the International Honeywell Evohome API (MyTotalConnectComfort) provided by Resideo"
 license = "MIT"
 repository = "https://github.com/divyavanmahajan/mytotalconnectcomfort"
@@ -20,6 +20,11 @@ serde_json = "1.0"
 tokio = { version = "1.0", features = ["full"] }
 thiserror = "1.0"
 async-trait = "0.1"
+clap = { version = "4.4", features = ["derive"] }
+tabled = "0.15"
+colored = "2.1"
+rpassword = "7.3"
+dirs = "5.0"
 
 [dev-dependencies]
 tokio-test = "0.4"
@@ -27,7 +32,7 @@ mockito = "1.2"
 anyhow = "1.0"
 
 [lib]
-name = "mytotalconnectcomfort"
+name = "clientmytcc"
 path = "src/lib.rs"
 
 [[example]]
@@ -37,3 +42,7 @@ path = "examples/basic_usage.rs"
 [[example]]
 name = "async_example"
 path = "examples/async_example.rs"
+
+[[bin]]
+name = "evohome"
+path = "src/bin/evohome.rs"

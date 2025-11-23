@@ -1,6 +1,6 @@
 # Development Guidelines
 
-> **About**: This library provides access to the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). It targets the international API at `international.mytotalconnectcomfort.com`.
+> **About**: This library provides access to the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). It targets the international API at `international.clientmytcc.com`.
 
 ## Getting Started
 
@@ -14,8 +14,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/divyavanmahajan/mytotalconnectcomfort.git
-cd mytotalconnectcomfort/python
+git clone https://github.com/divyavanmahajan/clientmytcc.git
+cd clientmytcc/python
 
 # Create virtual environment
 python -m venv venv
@@ -41,10 +41,10 @@ Use **Black** for automatic code formatting:
 
 ```bash
 # Format all code
-black mytotalconnectcomfort/
+black clientmytcc/
 
 # Check formatting without changes
-black --check mytotalconnectcomfort/
+black --check clientmytcc/
 ```
 
 ### Type Hints
@@ -98,29 +98,29 @@ def set_zone_temperature(
 
 ```bash
 # Run linter
-flake8 mytotalconnectcomfort/
+flake8 clientmytcc/
 
 # With specific rules
-flake8 --max-line-length=100 mytotalconnectcomfort/
+flake8 --max-line-length=100 clientmytcc/
 ```
 
 ### Type Checking with mypy
 
 ```bash
 # Run type checker
-mypy mytotalconnectcomfort/
+mypy clientmytcc/
 
 # Strict mode
-mypy --strict mytotalconnectcomfort/
+mypy --strict clientmytcc/
 ```
 
 ### Running All Checks
 
 ```bash
 # Format, lint, and type check
-black mytotalconnectcomfort/ && \
-flake8 mytotalconnectcomfort/ && \
-mypy mytotalconnectcomfort/
+black clientmytcc/ && \
+flake8 clientmytcc/ && \
+mypy clientmytcc/
 ```
 
 ## Testing
@@ -132,7 +132,7 @@ mypy mytotalconnectcomfort/
 pytest
 
 # Run with coverage
-pytest --cov=mytotalconnectcomfort --cov-report=html
+pytest --cov=clientmytcc --cov-report=html
 
 # Run specific test file
 pytest tests/test_client.py
@@ -180,7 +180,7 @@ def login_test():
 
 ```python
 import pytest
-from mytotalconnectcomfort import Client
+from clientmytcc import Client
 
 @pytest.fixture
 def client():
@@ -201,7 +201,7 @@ def mock_response():
 def test_get_locations(client, mock_response, requests_mock):
     """Test getting locations."""
     requests_mock.get(
-        "https://international.mytotalconnectcomfort.com/api/locationsapi/getlocations",
+        "https://international.clientmytcc.com/api/locationsapi/getlocations",
         json=mock_response
     )
     
@@ -219,13 +219,13 @@ def test_login(client, requests_mock):
     """Test login functionality."""
     # Mock login page
     requests_mock.get(
-        "https://international.mytotalconnectcomfort.com/Account/Login",
+        "https://international.clientmytcc.com/Account/Login",
         text="<html></html>"
     )
     
     # Mock login API
     requests_mock.post(
-        "https://international.mytotalconnectcomfort.com/api/accountApi/login",
+        "https://international.clientmytcc.com/api/accountApi/login",
         json={"Content": {"UserId": "123"}}
     )
     
@@ -239,10 +239,10 @@ Target: **>80% coverage**
 
 ```bash
 # Generate coverage report
-pytest --cov=mytotalconnectcomfort --cov-report=term-missing
+pytest --cov=clientmytcc --cov-report=term-missing
 
 # Generate HTML report
-pytest --cov=mytotalconnectcomfort --cov-report=html
+pytest --cov=clientmytcc --cov-report=html
 open htmlcov/index.html
 ```
 
@@ -316,9 +316,9 @@ git commit -m "fixes"
 3. **Run tests and checks**
    ```bash
    pytest
-   black mytotalconnectcomfort/
-   flake8 mytotalconnectcomfort/
-   mypy mytotalconnectcomfort/
+   black clientmytcc/
+   flake8 clientmytcc/
+   mypy clientmytcc/
    ```
 
 4. **Push and create PR**
@@ -337,7 +337,7 @@ git commit -m "fixes"
 
 ```
 python/
-├── mytotalconnectcomfort/      # Main package
+├── clientmytcc/      # Main package
 │   ├── __init__.py            # Package exports
 │   ├── client.py              # API client
 │   ├── models.py              # Data models
@@ -415,7 +415,7 @@ class NewModel:
 def test_new_endpoint(client, requests_mock):
     """Test new endpoint."""
     requests_mock.get(
-        "https://international.mytotalconnectcomfort.com/api/path",
+        "https://international.clientmytcc.com/api/path",
         json={"Content": {"Id": "123", "Name": "Test"}}
     )
     
@@ -448,7 +448,7 @@ Update in both files:
    version = "0.2.0"
    ```
 
-2. `mytotalconnectcomfort/__init__.py`:
+2. `clientmytcc/__init__.py`:
    ```python
    __version__ = "0.2.0"
    ```
@@ -483,7 +483,7 @@ python -m build
 python -m twine upload --repository testpypi dist/*
 
 # Test installation
-pip install --index-url https://test.pypi.org/simple/ mytotalconnectcomfort
+pip install --index-url https://test.pypi.org/simple/ clientmytcc
 ```
 
 ### 4. Publish to PyPI
@@ -575,5 +575,5 @@ ignore_missing_imports = true
 
 - [User Guide](USER_GUIDE.md)
 - [Architecture](ARCHITECTURE.md)
-- [Issue Tracker](https://github.com/divyavanmahajan/mytotalconnectcomfort/issues)
-- [Discussions](https://github.com/divyavanmahajan/mytotalconnectcomfort/discussions)
+- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
+- [Discussions](https://github.com/divyavanmahajan/clientmytcc/discussions)

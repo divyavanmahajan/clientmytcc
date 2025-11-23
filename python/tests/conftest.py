@@ -1,7 +1,7 @@
 """Test configuration and shared fixtures."""
 
 import pytest
-from mytotalconnectcomfort import Client
+from clientmytcc import Client
 
 
 @pytest.fixture

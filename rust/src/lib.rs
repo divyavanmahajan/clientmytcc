@@ -6,7 +6,7 @@
 //! # Example
 //!
 //! ```no_run
-//! use mytotalconnectcomfort::Client;
+//! use clientmytcc::Client;
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {

@@ -1,6 +1,6 @@
 //! Comprehensive integration tests for the MyTotalConnectComfort client.
 
-use mytotalconnectcomfort::{Client, Error};
+use clientmytcc::{Client, Error};
 use mockito::{Mock, Server};
 use serde_json::json;
 
@@ -257,9 +257,11 @@ mod integration {
         let password = std::env::var("EVOHOME_PASSWORD").expect("EVOHOME_PASSWORD not set");
 
         // Login
-        let login_response = client.login(&email, &password).await.unwrap();
+        let (login_response, _) = client.login(&email, &password).await.unwrap();
         assert!(!login_response.user_id.is_empty());
-        assert!(!login_response.display_name.is_empty());
+        // DisplayName might be null, so we just check if we got a user_id
+        assert!(!login_response.user_id.is_empty());
+        // assert!(!login_response.display_name.is_empty()); // Can be null
 
         // Get locations
         let locations = client.get_locations().await.unwrap();
@@ -285,7 +287,7 @@ mod integration {
             assert_eq!(zone_by_id.id, zone.id);
 
             let zone_by_name = client
-                .get_zone_by_name(location_id, &zone.name)
+                .get_zone_by_name(location_id, &zone.name.clone().unwrap_or_default())
                 .await
                 .unwrap();
             assert_eq!(zone_by_name.name, zone.name);

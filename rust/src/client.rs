@@ -15,7 +15,7 @@ const BASE_URL: &str = "https://international.mytotalconnectcomfort.com";
 /// # Example
 ///
 /// ```no_run
-/// use mytotalconnectcomfort::Client;
+/// use clientmytcc::Client;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -24,7 +24,7 @@ const BASE_URL: &str = "https://international.mytotalconnectcomfort.com";
 ///     
 ///     let locations = client.get_locations().await?;
 ///     for location in locations {
-///         println!("{}: {} zones", location.name, location.zones.len());
+///         println!("{}: {} zones", location.name.as_deref().unwrap_or("Unknown"), location.zones.len());
 ///     }
 ///     Ok(())
 /// }
@@ -66,7 +66,42 @@ impl Client {
     /// # Errors
     ///
     /// Returns `Error::Authentication` if login fails
-    pub async fn login(&mut self, email: &str, password: &str) -> Result<LoginResponse> {
+    /// Create a new API client with existing session cookies.
+    pub fn with_cookies(cookies: Vec<String>) -> Self {
+        let cookie_jar = Arc::new(Jar::default());
+        let url = BASE_URL.parse().unwrap();
+        
+        for cookie in cookies {
+            cookie_jar.add_cookie_str(&cookie, &url);
+        }
+
+        let http_client = HttpClient::builder()
+            .cookie_provider(Arc::clone(&cookie_jar))
+            .build()
+            .expect("Failed to create HTTP client");
+
+        Self {
+            http_client,
+            cookie_jar,
+            authenticated: true, // Assume authenticated if cookies provided
+        }
+    }
+
+    /// Authenticate with the API.
+    ///
+    /// # Arguments
+    ///
+    /// * `email` - User email address
+    /// * `password` - User password
+    ///
+    /// # Returns
+    ///
+    /// Login response with user information and session cookies
+    ///
+    /// # Errors
+    ///
+    /// Returns `Error::Authentication` if login fails
+    pub async fn login(&mut self, email: &str, password: &str) -> Result<(LoginResponse, Vec<String>)> {
         // First, get the login page to obtain CSRF tokens
         let login_page_url = format!("{}/Account/Login", BASE_URL);
         self.http_client.get(&login_page_url).send().await?;
@@ -97,6 +132,14 @@ impl Client {
             return Err(Error::Authentication("Invalid email or password".to_string()));
         }
 
+        // Capture cookies
+        let cookies: Vec<String> = response
+            .headers()
+            .get_all("set-cookie")
+            .iter()
+            .filter_map(|h| h.to_str().ok().map(|s| s.to_string()))
+            .collect();
+
         let api_response: ApiResponse<LoginResponse> = response.json().await?;
 
         if let Some(errors) = api_response.errors {
@@ -109,9 +152,20 @@ impl Client {
         }
 
         self.authenticated = true;
-        api_response
+        let user_data = api_response
             .content
-            .ok_or_else(|| Error::InvalidResponse("Missing login response content".to_string()))
+            .ok_or_else(|| Error::InvalidResponse("Missing login response content".to_string()))?;
+            
+        Ok((user_data, cookies))
+    }
+
+    /// Logout from the API.
+    ///
+    /// This invalidates the current session.
+    pub async fn logout(&self) -> Result<()> {
+        let url = format!("{}/Account/Logout?message=logout", BASE_URL);
+        let _response = self.http_client.get(&url).send().await?;
+        Ok(())
     }
 
     /// Get all locations associated with the account.
@@ -260,8 +314,21 @@ impl Client {
             .json(&request_body)
             .send()
             .await?;
+        let response_status = response.status();
+        let text = response.text().await?;
 
-        let api_response: ApiResponse<()> = response.json().await?;
+        if !response_status.is_success() {
+            return Err(Error::Api(format!("API Error {}: {}", response_status, text)));
+        }
+        
+        // Try to parse as JSON
+        let api_response: ApiResponse<()> = match serde_json::from_str(&text) {
+            Ok(r) => r,
+            Err(e) => {
+                return Err(Error::Api(format!("Failed to decode response: {}. Status: {}. Text: '{}'", e, response_status, text)));
+            }
+        };
+        
         self.check_errors(&api_response.errors)?;
 
         Ok(())

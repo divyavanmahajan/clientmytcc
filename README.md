@@ -2,7 +2,7 @@
 
 A comprehensive Python client library and API documentation for the **International Honeywell Evohome** heating system, provided by **Resideo** (who licensed the Honeywell brand).
 
-> **Note**: This is for the international version accessible via `international.mytotalconnectcomfort.com`. North American systems may use different endpoints.
+> **Note**: This is for the international version accessible via `international.clientmytcc.com`. North American systems may use different endpoints.
 
 ## Repository Contents
 
@@ -20,7 +20,7 @@ A production-ready Python package for controlling your Evohome heating system pr
 
 **Quick Start:**
 ```python
-from mytotalconnectcomfort import Client
+from clientmytcc import Client
 
 client = Client()
 client.login("your-email@example.com", "your-password")
@@ -51,7 +51,7 @@ An async Rust client library built on tokio for high-performance applications.
 
 **Quick Start:**
 ```rust
-use mytotalconnectcomfort::Client;
+use clientmytcc::Client;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -68,7 +68,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 **Documentation:**
 - [Rust Client README](rust/README.md) - Installation and usage
-- [API Documentation](https://docs.rs/mytotalconnectcomfort) - Full API docs
+- [API Documentation](https://docs.rs/clientmytcc) - Full API docs
 - [Examples](rust/examples/) - Working code examples
 
 ### API Documentation (`api/`)
@@ -83,14 +83,14 @@ Complete documentation of the MyTotalConnectComfort API endpoints.
 ### From PyPI (when published)
 
 ```bash
-pip install mytotalconnectcomfort
+pip install clientmytcc
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/divyavanmahajan/mytotalconnectcomfort.git
-cd mytotalconnectcomfort/python
+git clone https://github.com/divyavanmahajan/clientmytcc.git
+cd clientmytcc/python
 pip install -e .
 ```
 
@@ -102,7 +102,7 @@ pip install -e .
 ## Usage Example
 
 ```python
-from mytotalconnectcomfort import Client
+from clientmytcc import Client
 
 # Authenticate
 client = Client()
@@ -126,12 +126,12 @@ client.set_zone_temperature(
 ## Project Structure
 
 ```
-mytotalconnectcomfort/
+clientmytcc/
 ├── api/                          # API documentation
 │   ├── API_DOCUMENTATION.md      # Complete API reference
 │   └── openapi-spec.yaml         # OpenAPI specification
 ├── python/                       # Python client library
-│   ├── mytotalconnectcomfort/    # Main package
+│   ├── clientmytcc/    # Main package
 │   │   ├── __init__.py
 │   │   ├── client.py             # API client
 │   │   ├── models.py             # Data models
@@ -225,7 +225,7 @@ pytest  # Run tests
 The **Evohome** heating control system is provided by **Resideo Technologies, Inc.**, who licensed the Honeywell brand from Honeywell International Inc. This library interfaces with the international version of the MyTotalConnectComfort service.
 
 ### Supported Systems
-- International Honeywell Evohome (via `international.mytotalconnectcomfort.com`)
+- International Honeywell Evohome (via `international.clientmytcc.com`)
 - Evohome thermostats and zone controllers
 - Multi-zone heating systems
 
@@ -250,20 +250,20 @@ pip install -e ".[dev]"
 ```bash
 cd python
 pytest
-pytest --cov=mytotalconnectcomfort --cov-report=html
+pytest --cov=clientmytcc --cov-report=html
 ```
 
 ### Code Quality
 
 ```bash
 # Format code
-black mytotalconnectcomfort/
+black clientmytcc/
 
 # Type checking
-mypy mytotalconnectcomfort/
+mypy clientmytcc/
 
 # Linting
-flake8 mytotalconnectcomfort/
+flake8 clientmytcc/
 ```
 
 ## Contributing
@@ -296,8 +296,8 @@ Use this library at your own risk.
 
 - [API Documentation](api/API_DOCUMENTATION.md)
 - [Python Client Documentation](python/README.md)
-- [Issue Tracker](https://github.com/divyavanmahajan/mytotalconnectcomfort/issues)
-- [Discussions](https://github.com/divyavanmahajan/mytotalconnectcomfort/discussions)
+- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
+- [Discussions](https://github.com/divyavanmahajan/clientmytcc/discussions)
 
 ## Acknowledgments
 

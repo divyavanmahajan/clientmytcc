@@ -4,7 +4,7 @@
 
 The MyTotalConnectComfort Python client library provides a clean, type-safe interface to the MyTotalConnectComfort API for the **International Honeywell Evohome** heating system. This system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. The library is designed with simplicity, maintainability, and developer experience in mind.
 
-> **Important**: This library targets the international version of the Evohome system (`international.mytotalconnectcomfort.com`). North American Honeywell systems may use different APIs.
+> **Important**: This library targets the international version of the Evohome system (`international.clientmytcc.com`). North American Honeywell systems may use different APIs.
 
 ## Design Principles
 
@@ -18,12 +18,12 @@ The MyTotalConnectComfort Python client library provides a clean, type-safe inte
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        User Application                      │
+│                        User Application                     │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                      Client (client.py)                      │
+│                      Client (client.py)                     │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │  • Authentication (login)                              │ │
 │  │  • Session Management (cookies, CSRF tokens)           │ │
@@ -44,14 +44,14 @@ The MyTotalConnectComfort Python client library provides a clean, type-safe inte
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    requests.Session                          │
-│              (HTTP Client with Cookie Jar)                   │
+│                    requests.Session                         │
+│              (HTTP Client with Cookie Jar)                  │
 └───────────────────────────┬─────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│           MyTotalConnectComfort API (HTTPS)                  │
-│        https://international.mytotalconnectcomfort.com       │
+│           MyTotalConnectComfort API (HTTPS)                 │
+│        https://international.clientmytcc.com      │
 └─────────────────────────────────────────────────────────────┘
 ```
 

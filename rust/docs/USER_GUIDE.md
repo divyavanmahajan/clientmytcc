@@ -4,7 +4,7 @@
 
 Welcome to the MyTotalConnectComfort Rust Client Library! This guide will help you get started with controlling your **International Honeywell Evohome** heating system programmatically using async Rust.
 
-> **About the System**: The Evohome system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. This library is specifically designed for the international version accessible via `international.mytotalconnectcomfort.com`. If you have a North American Honeywell system, it may use different endpoints.
+> **About the System**: The Evohome system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. This library is specifically designed for the international version accessible via `international.clientmytcc.com`. If you have a North American Honeywell system, it may use different endpoints.
 
 ## Table of Contents
 
@@ -25,22 +25,22 @@ Welcome to the MyTotalConnectComfort Rust Client Library! This guide will help y
 
 ```toml
 [dependencies]
-mytotalconnectcomfort = "0.1"
+clientmytcc = "0.1"
 tokio = { version = "1", features = ["full"] }
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/divyavanmahajan/mytotalconnectcomfort.git
-cd mytotalconnectcomfort/rust
+git clone https://github.com/divyavanmahajan/clientmytcc.git
+cd clientmytcc/rust
 cargo build --release
 ```
 
 ### Verify Installation
 
 ```bash
-cargo add mytotalconnectcomfort
+cargo add clientmytcc
 cargo check
 ```
 
@@ -49,7 +49,7 @@ cargo check
 Here's a complete example to get you started:
 
 ```rust
-use mytotalconnectcomfort::Client;
+use clientmytcc::Client;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -89,7 +89,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### Basic Login
 
 ```rust
-use mytotalconnectcomfort::{Client, Error};
+use clientmytcc::{Client, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -126,7 +126,7 @@ let system = client.get_location_system(&locations[0].id).await?;
 Sessions expire after 1 hour. If you get a `SessionExpired` error, simply login again:
 
 ```rust
-use mytotalconnectcomfort::Error;
+use clientmytcc::Error;
 
 let locations = match client.get_locations().await {
     Ok(locs) => locs,
@@ -203,7 +203,7 @@ for zone in &system.zones {
 ### Get Zone by ID
 
 ```rust
-use mytotalconnectcomfort::Error;
+use clientmytcc::Error;
 
 match client.get_zone("1232176", "5211675").await {
     Ok(zone) => println!("Found zone: {}", zone.name),
@@ -314,7 +314,7 @@ if desired_temp < zone.min_heat_setpoint {
 ### Comprehensive Error Handling
 
 ```rust
-use mytotalconnectcomfort::{Client, Error};
+use clientmytcc::{Client, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -641,5 +641,5 @@ println!("Override active: {}", zone.override_active);
 
 - [API Documentation](../../api/API_DOCUMENTATION.md)
 - [Architecture](ARCHITECTURE.md)
-- [Rust API Docs](https://docs.rs/mytotalconnectcomfort)
-- [Issue Tracker](https://github.com/divyavanmahajan/mytotalconnectcomfort/issues)
+- [Rust API Docs](https://docs.rs/clientmytcc)
+- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)

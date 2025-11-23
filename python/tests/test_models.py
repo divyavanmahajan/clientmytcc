@@ -1,7 +1,7 @@
 """Tests for data models."""
 
 import pytest
-from mytotalconnectcomfort.models import Zone, Location, UserInfo, Gateway
+from clientmytcc.models import Zone, Location, UserInfo, Gateway
 
 
 class TestZone:

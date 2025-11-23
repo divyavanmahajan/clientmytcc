@@ -4,7 +4,7 @@
 
 Welcome to the MyTotalConnectComfort Python Client Library! This guide will help you get started with controlling your **International Honeywell Evohome** heating system programmatically.
 
-> **About the System**: The Evohome system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. This library is specifically designed for the international version accessible via `international.mytotalconnectcomfort.com`. If you have a North American Honeywell system, it may use different endpoints.
+> **About the System**: The Evohome system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. This library is specifically designed for the international version accessible via `international.clientmytcc.com`. If you have a North American Honeywell system, it may use different endpoints.
 
 ## Table of Contents
 
@@ -24,21 +24,21 @@ Welcome to the MyTotalConnectComfort Python Client Library! This guide will help
 ### From PyPI
 
 ```bash
-pip install mytotalconnectcomfort
+pip install clientmytcc
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/divyavanmahajan/mytotalconnectcomfort.git
-cd mytotalconnectcomfort/python
+git clone https://github.com/divyavanmahajan/clientmytcc.git
+cd clientmytcc/python
 pip install -e .
 ```
 
 ### Verify Installation
 
 ```python
-python -c "from mytotalconnectcomfort import Client; print('Installation successful!')"
+python -c "from clientmytcc import Client; print('Installation successful!')"
 ```
 
 ## Quick Start
@@ -46,7 +46,7 @@ python -c "from mytotalconnectcomfort import Client; print('Installation success
 Here's a complete example to get you started:
 
 ```python
-from mytotalconnectcomfort import Client
+from clientmytcc import Client
 
 # Create and authenticate
 client = Client()
@@ -77,8 +77,8 @@ client.set_zone_temperature(
 ### Basic Login
 
 ```python
-from mytotalconnectcomfort import Client
-from mytotalconnectcomfort.exceptions import AuthenticationError
+from clientmytcc import Client
+from clientmytcc.exceptions import AuthenticationError
 
 client = Client()
 
@@ -108,7 +108,7 @@ system = client.get_location_system(locations[0].id)
 Sessions expire after 1 hour. If you get a `SessionExpiredError`, simply login again:
 
 ```python
-from mytotalconnectcomfort.exceptions import SessionExpiredError
+from clientmytcc.exceptions import SessionExpiredError
 
 try:
     locations = client.get_locations()
@@ -171,7 +171,7 @@ for zone in system.zones:
 ### Get Zone by ID
 
 ```python
-from mytotalconnectcomfort.exceptions import ZoneNotFoundError
+from clientmytcc.exceptions import ZoneNotFoundError
 
 try:
     zone = client.get_zone(location_id="1232176", zone_id="5211675")
@@ -276,8 +276,8 @@ else:
 ### Comprehensive Error Handling
 
 ```python
-from mytotalconnectcomfort import Client
-from mytotalconnectcomfort.exceptions import (
+from clientmytcc import Client
+from clientmytcc.exceptions import (
     AuthenticationError,
     APIError,
     ZoneNotFoundError,
@@ -568,4 +568,4 @@ with ThreadPoolExecutor(max_workers=5) as executor:
 - [API Documentation](../../api/API_DOCUMENTATION.md)
 - [Architecture](ARCHITECTURE.md)
 - [Development Guidelines](DEVELOPMENT.md)
-- [Issue Tracker](https://github.com/divyavanmahajan/mytotalconnectcomfort/issues)
+- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)

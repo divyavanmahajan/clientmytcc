@@ -2,9 +2,9 @@
 
 ## Overview
 
-This document describes the API endpoints used by the MyTotalConnectComfort web application for managing heating zones and thermostats. This API is for the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). This is specifically for the international version accessible via `international.mytotalconnectcomfort.com`.
+This document describes the API endpoints used by the MyTotalConnectComfort web application for managing heating zones and thermostats. This API is for the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). This is specifically for the international version accessible via `international.clientmytcc.com`.
 
-**Base URL**: `https://international.mytotalconnectcomfort.com`
+**Base URL**: `https://international.clientmytcc.com`
 
 > **Note**: This documentation covers the international Evohome system. North American systems may use different endpoints.
 
@@ -64,7 +64,7 @@ Additionally, POST requests require an `antiForgeryToken` header for CSRF protec
     "ResourceUri": null
   },
   "Errors": null,
-  "RedirectUrl": "https://international.mytotalconnectcomfort.com/Locations",
+  "RedirectUrl": "https://international.clientmytcc.com/Locations",
   "CurrentCulture": null
 }
 ```

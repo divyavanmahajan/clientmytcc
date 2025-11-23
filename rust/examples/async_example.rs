@@ -1,6 +1,6 @@
 //! Async example showing concurrent operations.
 
-use mytotalconnectcomfort::Client;
+use clientmytcc::Client;
 use tokio::try_join;
 
 #[tokio::main]
@@ -28,8 +28,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("[OK] Fetched system and account info\n");
 
     // Display results
-    println!("Account: {} {}", account.first_name, account.last_name);
-    println!("Zones in {}: {}", system.name, system.zones.len());
+    println!("Account: {} {}", account.first_name.as_deref().unwrap_or(""), account.last_name.as_deref().unwrap_or(""));
+    println!("Zones in {}: {}", system.name.as_deref().unwrap_or("Unknown"), system.zones.len());
 
     // Update multiple zones concurrently
     if system.zones.len() >= 2 {
@@ -43,6 +43,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             client.set_zone_temperature(zone2_id, 20.0, true, 0, 0)
         )?;
 
+        println!("Setting temperature for zone: {}", system.zones[0].name.as_deref().unwrap_or("Unknown"));
         println!("[OK] Updated {} zones", 2);
     }
 

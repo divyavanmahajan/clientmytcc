@@ -2,8 +2,8 @@
 Basic usage example for the MyTotalConnectComfort API client.
 """
 
-from mytotalconnectcomfort import Client
-from mytotalconnectcomfort.exceptions import (
+from clientmytcc import Client
+from clientmytcc.exceptions import (
     AuthenticationError,
     APIError,
     ZoneNotFoundError,
