@@ -26,6 +26,7 @@ jobs:
           target: ${{ matrix.target }}
           args: --release --out dist --manifest-path Cargo.toml
           working-directory: rust
+          container: zig
           manylinux: auto
       - name: Upload wheels
         uses: actions/upload-artifact@v4
