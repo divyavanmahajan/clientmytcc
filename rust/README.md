@@ -4,8 +4,8 @@ An async Rust client library for the **International Honeywell Evohome** heating
 
 > **Note**: This library is designed for the international Evohome system accessible via `international.clientmytcc.com`. North American systems may require different endpoints.
 
-[![Crates.io](https://img.shields.io/crates/v/clientmytcc.svg)](https://crates.io/crates/clientmytcc)
-[![Documentation](https://docs.rs/clientmytcc/badge.svg)](https://docs.rs/clientmytcc)
+[![Crates.io](https://img.shields.io/crates/v/clientmytcc-rs.svg)](https://crates.io/crates/clientmytcc-rs)
+[![Documentation](https://docs.rs/clientmytcc-rs/badge.svg)](https://docs.rs/clientmytcc-rs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -23,7 +23,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-clientmytcc = "0.1"
+clientmytcc-rs = "0.1"
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -66,7 +66,7 @@ evohome schedule
 ## Quick Start
 
 ```rust
-use clientmytcc::Client;
+use clientmytcc_rs::Client;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -104,7 +104,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### Authentication
 
 ```rust
-use clientmytcc::{Client, Error};
+use clientmytcc_rs::{Client, Error};
 
 let mut client = Client::new();
 
