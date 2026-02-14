@@ -46,5 +46,5 @@ name = "async_example"
 path = "examples/async_example.rs"
 
 [[bin]]
-name = "evohome"
-path = "src/bin/evohome.rs"
+name = "mytcc_rs"
+path = "src/bin/mytcc_rs.rs"

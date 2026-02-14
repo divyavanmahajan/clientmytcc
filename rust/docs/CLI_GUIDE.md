@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `evohome` command-line tool provides easy access to the MyTotalConnectComfort API for controlling your International Honeywell Evohome heating system. Available in both Python and Rust implementations with identical command structure.
+The `mytcc_rs` command-line tool provides easy access to the MyTotalConnectComfort API for controlling your International Honeywell Evohome heating system. Available in both Python and Rust implementations with identical command structure.
 
 ## Installation
 
@@ -23,69 +23,69 @@ cargo install clientmytcc
 ### Quick Start
 
 ```bash
-evohome login user@example.com
+mytcc_rs login user@example.com
 # Enter password when prompted
 ```
 
 ### List Locations
 
 ```bash
-evohome locations
+mytcc_rs locations
 ```
 
 ### View Zone Status
 
 ```bash
 # Auto-selects location if you have only one
-evohome zones
+mytcc_rs zones
 
 # Or specify location ID
-evohome zones 1232176
+mytcc_rs zones 1232176
 ```
 
 ### Set Temperature
 
 ```bash
 # By zone name (case-insensitive prefix matching)
-evohome set living 21C
-evohome set bed 70F
+mytcc_rs set living 21C
+mytcc_rs set bed 70F
 
 # By zone ID
-evohome set 5211675 21C
+mytcc_rs set 5211675 21C
 
 # With duration
-evohome set living 22C --duration 2h
-evohome set bedroom 72F --duration 30m
+mytcc_rs set living 22C --duration 2h
+mytcc_rs set bedroom 72F --duration 30m
 
 # Interactive mode (prompts for location, zone, and temperature)
-evohome set
+mytcc_rs set
 ```
 
 ## Commands
 
 ### Authentication
 
-#### `evohome login <email>`
+#### `mytcc_rs login <email>`
 Authenticate with your MyTotalConnectComfort account.
 
 ```bash
-evohome login user@example.com
+mytcc_rs login user@example.com
 ```
 
-#### `evohome logout`
+#### `mytcc_rs logout`
 Clear stored credentials.
 
 ```bash
-evohome logout
+mytcc_rs logout
 ```
 
 ### Information
 
-#### `evohome locations`
+#### `mytcc_rs locations`
 List all locations (homes) associated with your account.
 
 ```bash
-evohome locations
+mytcc_rs locations
 ```
 
 Output:
@@ -97,34 +97,34 @@ Output:
 └──────────┴──────┴────────┴───────┘
 ```
 
-#### `evohome zones <location-id>`
+#### `mytcc_rs zones <location-id>`
 List all zones in a location.
 
 ```bash
-evohome zones 1232176
+mytcc_rs zones 1232176
 ```
 
-#### `evohome status <location-id> [--format table|json]`
+#### `mytcc_rs status <location-id> [--format table|json]`
 Show current status of all zones.
 
 ```bash
 # Table format (default)
-evohome status 1232176
+mytcc_rs status 1232176
 
 # JSON format
-evohome status 1232176 --format json
+mytcc_rs status 1232176 --format json
 ```
 
-#### `evohome account`
+#### `mytcc_rs account`
 Show account information.
 
 ```bash
-evohome account
+mytcc_rs account
 ```
 
 ### Temperature Control
 
-#### `evohome set <zone> <temperature> [OPTIONS]`
+#### `mytcc_rs set <zone> <temperature> [OPTIONS]`
 Set zone temperature.
 
 **Zone Parameter**:
@@ -147,27 +147,27 @@ Set zone temperature.
 
 ```bash
 # By zone name with Celsius
-evohome set living 21C
-evohome set bedroom 70F
+mytcc_rs set living 21C
+mytcc_rs set bedroom 70F
 
 # By zone prefix
-evohome set liv 21.5C
-evohome set bed 22C
+mytcc_rs set liv 21.5C
+mytcc_rs set bed 22C
 
 # By zone ID
-evohome set 5211675 21C
+mytcc_rs set 5211675 21C
 
 # With duration
-evohome set living 22C --duration 2h
-evohome set bedroom 72F --duration 30m
-evohome set bathroom 23C --duration 1.5h
+mytcc_rs set living 22C --duration 2h
+mytcc_rs set bedroom 72F --duration 30m
+mytcc_rs set bathroom 23C --duration 1.5h
 
 # Interactive mode
-evohome set
+mytcc_rs set
 # → Prompts for location (if multiple)
 # → Prompts for zone
 # → Prompts for temperature
-# → [INFO] Command to skip selection: evohome set 5211675 21C
+# → [INFO] Command to skip selection: mytcc_rs set 5211675 21C
 ```
 
 ## Common Use Cases
@@ -178,13 +178,13 @@ Boost all zones to a comfortable temperature for a few hours.
 
 ```bash
 # Auto-selects location if you have only one
-evohome boost --temp 22C --duration 2h
+mytcc_rs boost --temp 22C --duration 2h
 
 # Specify location
-evohome boost 1232176 --temp 72F --duration 3h
+mytcc_rs boost 1232176 --temp 72F --duration 3h
 
 # With minutes
-evohome boost --temp 23C --duration 120m
+mytcc_rs boost --temp 23C --duration 120m
 ```
 
 **Options:**
@@ -198,7 +198,7 @@ evohome boost --temp 23C --duration 120m
 **Example:**
 ```bash
 # Boost to 23°C for 3 hours
-evohome boost --temp 23C --duration 3h
+mytcc_rs boost --temp 23C --duration 3h
 ```
 
 ### Energy Saving Mode
@@ -207,13 +207,13 @@ Set all zones to an energy-saving temperature.
 
 ```bash
 # Auto-selects location
-evohome eco --temp 18C
+mytcc_rs eco --temp 18C
 
 # With Fahrenheit
-evohome eco --temp 64F
+mytcc_rs eco --temp 64F
 
 # Specify location
-evohome eco 1232176 --temp 17C
+mytcc_rs eco 1232176 --temp 17C
 ```
 
 **Options:**
@@ -222,7 +222,7 @@ evohome eco 1232176 --temp 17C
 **Example:**
 ```bash
 # Set to 17°C
-evohome eco 1232176 --temp 17.0
+mytcc_rs eco 1232176 --temp 17.0
 ```
 
 ### Temperature Monitoring
@@ -231,13 +231,13 @@ View current status of all zones with heating status.
 
 ```bash
 # Table format (auto-selects location)
-evohome monitor
+mytcc_rs monitor
 
 # JSON format for scripting
-evohome monitor --format json
+mytcc_rs monitor --format json
 
 # Specify location
-evohome monitor 1232176 --format table
+mytcc_rs monitor 1232176 --format table
 ```
 
 **Table Output:**
@@ -267,13 +267,13 @@ Set all zones to frost protection temperature.
 
 ```bash
 # Auto-selects location
-evohome vacation --temp 12C
+mytcc_rs vacation --temp 12C
 
 # With Fahrenheit
-evohome vacation --temp 54F
+mytcc_rs vacation --temp 54F
 
 # Specify location
-evohome vacation 1232176 --temp 10C
+mytcc_rs vacation 1232176 --temp 10C
 ```
 
 **Options:**
@@ -285,10 +285,10 @@ Reset all zones to follow their programmed schedule (removes any manual override
 
 ```bash
 # Auto-selects location
-evohome schedule
+mytcc_rs schedule
 
 # Specify location
-evohome schedule 1232176
+mytcc_rs schedule 1232176
 ```
 
 This command cancels any temporary or permanent temperature overrides and returns all zones to their normal scheduled operation.
@@ -304,12 +304,12 @@ If location is not specified:
 
 ```bash
 # Set default location
-evohome config set default_location 1232176
+mytcc_rs config set default_location 1232176
 
 # Now all commands auto-use this location
-evohome boost
-evohome monitor
-evohome zones
+mytcc_rs boost
+mytcc_rs monitor
+mytcc_rs zones
 ```
 
 ### Zone Name Matching
@@ -321,16 +321,16 @@ Zones can be specified by:
 
 ```bash
 # All of these work:
-evohome set 5211675 21C          # By ID
-evohome set Livingroom 21C       # By exact name
-evohome set livingroom 21C       # Case-insensitive
-evohome set liv 21C              # By prefix
-evohome set LIVING 21C           # Case-insensitive prefix
+mytcc_rs set 5211675 21C          # By ID
+mytcc_rs set Livingroom 21C       # By exact name
+mytcc_rs set livingroom 21C       # Case-insensitive
+mytcc_rs set liv 21C              # By prefix
+mytcc_rs set LIVING 21C           # Case-insensitive prefix
 ```
 
 If multiple zones match the prefix, you'll be prompted to select:
 ```bash
-evohome set b 21C
+mytcc_rs set b 21C
 # → Multiple zones match 'b':
 #    1.   5211675: ( 18.0°C -->  20.0°C) Bedroom             
 #    2.   5211676: ( 19.0°C -->  21.0°C) Bathroom            
@@ -345,8 +345,8 @@ Supports both Celsius and Fahrenheit:
 
 Automatic conversion to Celsius for API:
 ```bash
-evohome set living 70F    # → 21.1°C
-evohome boost --temp 72F  # → 22.2°C
+mytcc_rs set living 70F    # → 21.1°C
+mytcc_rs boost --temp 72F  # → 22.2°C
 ```
 
 ### Duration Units
@@ -356,12 +356,12 @@ Supports hours and minutes:
 - **Minutes**: `30m`, `90m`, `120m`
 
 ```bash
-evohome set living 21C --duration 2h      # 2 hours
-evohome set bedroom 22C --duration 30m    # 30 minutes
-evohome boost --duration 1.5h             # 1 hour 30 minutes
+mytcc_rs set living 21C --duration 2h      # 2 hours
+mytcc_rs set bedroom 22C --duration 30m    # 30 minutes
+mytcc_rs boost --duration 1.5h             # 1 hour 30 minutes
 ```
 
-Configuration is stored in `~/.config/evohome/config.toml` (shared between Python and Rust CLIs).
+Configuration is stored in `~/.config/mytcc_rs/config.toml` (shared between Python and Rust CLIs).
 
 ```toml
 email = "user@example.com"
@@ -388,7 +388,7 @@ Beautiful, human-readable tables:
 Machine-readable output for scripting:
 
 ```bash
-evohome status 1232176 --format json | jq '.[] | select(.status == "heating")'
+mytcc_rs status 1232176 --format json | jq '.[] | select(.status == "heating")'
 ```
 
 ## Scripting Examples
@@ -397,7 +397,7 @@ evohome status 1232176 --format json | jq '.[] | select(.status == "heating")'
 
 ```bash
 #!/bin/bash
-STATUS=$(evohome monitor --format json)
+STATUS=$(mytcc_rs monitor --format json)
 HEATING=$(echo $STATUS | jq '[.[] | select(.status == "heating")] | length')
 
 if [ "$HEATING" -gt 0 ]; then
@@ -413,7 +413,7 @@ TEMP=$(curl -s "wttr.in/?format=%t" | tr -d '+°C')
 
 if [ "$TEMP" -lt 5 ]; then
     echo "Cold morning detected, boosting heating"
-    evohome boost --temp 23C --duration 2h
+    mytcc_rs boost --temp 23C --duration 2h
 fi
 ```
 
@@ -422,12 +422,12 @@ fi
 ```bash
 #!/bin/bash
 # Set living areas to comfortable temperature
-evohome set living 21C
-evohome set kitchen 21C
+mytcc_rs set living 21C
+mytcc_rs set kitchen 21C
 
 # Set bedrooms cooler
-evohome set bedroom 19C
-evohome set "guest bedroom" 18C
+mytcc_rs set bedroom 19C
+mytcc_rs set "guest bedroom" 18C
 ```
 
 ### Temperature Control with Units
@@ -435,19 +435,19 @@ evohome set "guest bedroom" 18C
 ```bash
 #!/bin/bash
 # US users can use Fahrenheit
-evohome set living 70F --duration 2h
-evohome boost --temp 72F --duration 3h
+mytcc_rs set living 70F --duration 2h
+mytcc_rs boost --temp 72F --duration 3h
 
 # Mix and match
-evohome set bedroom 68F
-evohome set bathroom 22C
+mytcc_rs set bedroom 68F
+mytcc_rs set bathroom 22C
 ```
 
 ### Daily Temperature Report
 
 ```bash
 #!/bin/bash
-evohome monitor 1232176 --format json | \
+mytcc_rs monitor 1232176 --format json | \
     jq -r '.[] | "\(.name): \(.current)°C → \(.target)°C (\(.status))"'
 ```
 
@@ -461,7 +461,7 @@ evohome monitor 1232176 --format json | \
 pip install --upgrade clientmytcc
 
 # Check installation
-which evohome
+which mytcc_rs
 ```
 
 **Rust:**
@@ -470,7 +470,7 @@ which evohome
 cargo install clientmytcc
 
 # Check installation
-which evohome
+which mytcc_rs
 ```
 
 ### Authentication
@@ -479,7 +479,7 @@ You can authenticate interactively or using environment variables.
 
 #### Interactive Login
 ```bash
-evohome login "email@example.com"
+mytcc_rs login "email@example.com"
 # You will be prompted for password
 ```
 
@@ -487,13 +487,13 @@ evohome login "email@example.com"
 You can securely store your credentials in the OS keyring (macOS Keychain, Windows Credential Manager, etc.) to enable seamless auto-login.
 
 ```bash
-evohome config set-credentials --email user@example.com
+mytcc_rs config set-credentials --email user@example.com
 # You will be prompted for your password securely
 ```
 
 Once set, you can run any command without `login` or environment variables:
 ```bash
-evohome locations
+mytcc_rs locations
 ```
 
 #### Environment Variables (Auto-Login)
@@ -507,7 +507,7 @@ export EVOHOME_USER="email@example.com"
 export EVOHOME_PASSWORD="your_password"
 
 # Now you can run commands without explicit login
-evohome locations
+mytcc_rs locations
 ```
 
 ## Tips

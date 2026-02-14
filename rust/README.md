@@ -28,21 +28,21 @@ tokio = { version = "1", features = ["full"] }
 ```
 
 ## CLI Usage
-The project includes a binary `evohome` for controlling your heating system from the command line. Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
+The project includes a binary `mytcc_rs` for controlling your heating system from the command line. Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
 
 ### Basic Commands
 ```bash
 # Login (saves session to ~/.config/clientmytcc/session.json)
-evohome login --email user@example.com
+mytcc_rs login --email user@example.com
 
 # List locations
-evohome locations
+mytcc_rs locations
 
 # Monitor all zones
-evohome monitor
+mytcc_rs monitor
 
 # Logout (clears session)
-evohome logout
+mytcc_rs logout
 ```
 
 ### Authentication
@@ -50,7 +50,7 @@ You can authenticate interactively, use secure storage, or set environment varia
 
 1. **Secure Storage (Recommended)**
    ```bash
-   evohome config set-credentials --email user@example.com
+   mytcc_rs config set-credentials --email user@example.com
    ```
 
 2. **Environment Variables**
@@ -60,26 +60,26 @@ You can authenticate interactively, use secure storage, or set environment varia
 ```bash
 export EVOHOME_USER="user@example.com"
 export EVOHOME_PASSWORD="secure_password"
-evohome locations  # Works without explicit login
+mytcc_rs locations  # Works without explicit login
 ```
 
 
 ### Temperature Control
 ```bash
 # Set temperature for a specific zone
-evohome set --zone-id "Living Room" --temperature 21.0
+mytcc_rs set --zone-id "Living Room" --temperature 21.0
 
 # Boost all zones
-evohome boost --temp 22.0 --duration 2
+mytcc_rs boost --temp 22.0 --duration 2
 
 # Enable Eco mode
-evohome eco
+mytcc_rs eco
 
 # Enable Vacation mode
-evohome vacation --temp 12.0
+mytcc_rs vacation --temp 12.0
 
 # Reset all zones to follow schedule
-evohome schedule
+mytcc_rs schedule
 ```
 
 Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).

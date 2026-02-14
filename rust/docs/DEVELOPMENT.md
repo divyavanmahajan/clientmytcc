@@ -219,7 +219,7 @@ cargo test --test cli_integration_test -- --ignored --nocapture
 rust/
 ├── src/
 │   ├── bin/
-│   │   └── evohome.rs          # CLI with inline unit tests
+│   │   └── mytcc_rs.rs          # CLI with inline unit tests
 │   └── *.rs                    # Unit tests in modules
 └── tests/
     ├── integration_test.rs     # Library integration tests
@@ -388,7 +388,7 @@ rust/
 │   ├── error.rs            # Error types
 │   ├── types.rs            # Common types
 │   └── bin/
-│       └── evohome.rs      # CLI binary
+│       └── mytcc_rs.rs      # CLI binary
 ├── tests/
 │   ├── integration_test.rs     # Library integration tests
 │   ├── cli_integration_test.rs # CLI integration tests
@@ -707,13 +707,13 @@ criterion_main!(benches);
 
 ### CLI Features
 
-The `evohome` CLI (`src/bin/evohome.rs`) includes several advanced features:
+The `mytcc_rs` CLI (`src/bin/mytcc_rs.rs`) includes several advanced features:
 
 #### Session Management
-- Saves session cookies to `~/.config/clientmytcc/session.json`
+- Saves session cookies to `~/.config/mytcc_rs/session.json`
 - Auto-validates session on startup
 - Falls back to environment variables if session expired
-- Supports manual login with `evohome login`
+- Supports manual login with `mytcc_rs login`
 
 #### Smart Defaults
 - Auto-selects location if only one exists
@@ -735,9 +735,9 @@ The `evohome` CLI (`src/bin/evohome.rs`) includes several advanced features:
 - Provides immediate feedback on temperature changes
 
 #### Command Arguments
-- Temperature is a positional argument: `evohome boost 20C`
-- Location is an option: `evohome boost 20C --location-id 12345` or `-l 12345`
-- Duration for boost: `evohome boost 20C --duration 3`
+- Temperature is a positional argument: `mytcc_rs boost 20C`
+- Location is an option: `mytcc_rs boost 20C --location-id 12345` or `-l 12345`
+- Duration for boost: `mytcc_rs boost 20C --duration 3`
 
 ### CLI Testing
 
@@ -748,17 +748,17 @@ Test CLI commands manually:
 cargo install --path .
 
 # Test commands
-evohome login
-evohome status
-evohome boost 20C
-evohome eco 18C
-evohome vacation 12C
-evohome set living 21C
+mytcc_rs login
+mytcc_rs status
+mytcc_rs boost 20C
+mytcc_rs eco 18C
+mytcc_rs vacation 12C
+mytcc_rs set living 21C
 
 # Test with options
-evohome boost 20C --duration 3
-evohome eco 18C --override
-evohome status --format json
+mytcc_rs boost 20C --duration 3
+mytcc_rs eco 18C --override
+mytcc_rs status --format json
 ```
 
 ### Adding CLI Commands

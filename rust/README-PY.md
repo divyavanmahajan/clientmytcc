@@ -1,6 +1,6 @@
 # mytcc_rs
 
-This Python package provides a fast, Rust-powered CLI for the **International Honeywell Evohome** heating system (MyTotalConnectComfort). It is a lightweight wrapper around the `evohome` binary built in Rust.
+This Python package provides a fast, Rust-powered CLI for the **International Honeywell Evohome** heating system (MyTotalConnectComfort). It is a lightweight wrapper around the `mytcc_rs` binary built in Rust.
 
 ## Quick Start (No Installation Required)
 
@@ -24,28 +24,28 @@ pip install mytcc_rs
 uv add mytcc_rs
 ```
 
-Once installed, you can use the `evohome` command directly:
+Once installed, you can use the `mytcc_rs` command directly:
 
 ```bash
-evohome --help
+mytcc_rs --help
 ```
 
 ## CLI Usage
-The project includes a binary `evohome` for controlling your heating system from the command line.
+The project includes a binary `mytcc_rs` for controlling your heating system from the command line.
 
 ### Basic Commands
 ```bash
 # Login (saves session to ~/.config/clientmytcc/session.json)
-evohome login --email user@example.com
+mytcc_rs login --email user@example.com
 
 # List locations
-evohome locations
+mytcc_rs locations
 
 # Monitor all zones
-evohome monitor
+mytcc_rs monitor
 
 # Logout (clears session)
-evohome logout
+mytcc_rs logout
 ```
 
 ### Authentication Options
@@ -53,7 +53,7 @@ You can log in interactively, use secure credentials storage, or use environment
 
 1. **Secure Storage (Recommended)**
    ```bash
-   evohome config set-credentials --email user@example.com
+   mytcc_rs config set-credentials --email user@example.com
    ```
 
 2. **Environment Variables**
@@ -66,26 +66,26 @@ export EVOHOME_USER="user@example.com"
 export EVOHOME_PASSWORD="secure_password"
 
 # Now you can run commands directly without 'login'
-evohome locations
+mytcc_rs locations
 ```
 
 
 ### Temperature Control
 ```bash
 # Set temperature for a specific zone
-evohome set --zone-id "Living Room" --temperature 21.0
+mytcc_rs set --zone-id "Living Room" --temperature 21.0
 
 # Boost all zones
-evohome boost --temp 22.0 --duration 2
+mytcc_rs boost --temp 22.0 --duration 2
 
 # Enable Eco mode
-evohome eco
+mytcc_rs eco
 
 # Enable Vacation mode
-evohome vacation --temp 12.0
+mytcc_rs vacation --temp 12.0
 
 # Reset all zones to follow schedule
-evohome schedule
+mytcc_rs schedule
 ```
 
 ## Detailed CLI Documentation

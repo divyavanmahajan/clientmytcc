@@ -11,7 +11,7 @@ use tabled::{Table, Tabled};
 use keyring::Entry;
 
 #[derive(Parser)]
-#[command(name = "evohome")]
+#[command(name = "mytcc_rs")]
 #[command(about = "MyTotalConnectComfort CLI for Evohome heating control", long_about = None)]
 #[command(version)]
 struct Cli {
@@ -263,10 +263,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             if permanent {
                 println!("{} Set zone {} to {}°C (permanent)", "[OK]".green(), zone_id, temp);
-                println!("{} Command to skip selection: evohome set {} {}C", "[INFO]".dimmed(), zone_id, temp);
+                println!("{} Command to skip selection: mytcc_rs set {} {}C", "[INFO]".dimmed(), zone_id, temp);
             } else {
                 println!("{} Set zone {} to {}°C for {}h {}m", "[OK]".green(), zone_id, temp, h, m);
-                println!("{} Command to skip selection: evohome set {} {}C -d {} -m {}", "[INFO]".dimmed(), zone_id, temp, h, m);
+                println!("{} Command to skip selection: mytcc_rs set {} {}C -d {} -m {}", "[INFO]".dimmed(), zone_id, temp, h, m);
             }
         }
 
@@ -523,7 +523,7 @@ async fn get_authenticated_client() -> Result<Client, Box<dyn std::error::Error>
         }
     }
 
-    Err(Box::new(Error::Authentication("Please login using 'evohome login', set credentials using 'evohome config set-credentials', or set EVOHOME_USER/EVOHOME_PASSWORD".to_string())))
+    Err(Box::new(Error::Authentication("Please login using 'mytcc_rs login', set credentials using 'mytcc_rs config set-credentials', or set EVOHOME_USER/EVOHOME_PASSWORD".to_string())))
 }
 
 fn get_settings_path() -> PathBuf {
