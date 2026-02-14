@@ -4,8 +4,8 @@ An async Rust client library for the **International Honeywell Evohome** heating
 
 > **Note**: This library is designed for the international Evohome system accessible via `international.clientmytcc.com`. North American systems may require different endpoints.
 
-[![Crates.io](https://img.shields.io/crates/v/mytcc_rs.svg)](https://crates.io/crates/mytcc_rs)
-[![Documentation](https://docs.rs/mytcc_rs/badge.svg)](https://docs.rs/mytcc_rs)
+[![Crates.io](https://img.shields.io/crates/v/evohome_rs.svg)](https://crates.io/crates/evohome_rs)
+[![Documentation](https://docs.rs/evohome_rs/badge.svg)](https://docs.rs/evohome_rs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -23,26 +23,26 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-mytcc_rs = "0.1"
+evohome_rs = "0.1"
 tokio = { version = "1", features = ["full"] }
 ```
 
 ## CLI Usage
-The project includes a binary `mytcc_rs` for controlling your heating system from the command line. Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
+The project includes a binary `evohome_rs` for controlling your heating system from the command line. Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
 
 ### Basic Commands
 ```bash
-# Login (saves session to ~/.config/clientmytcc/session.json)
-mytcc_rs login --email user@example.com
+# Login (saves session to ~/.config/evohome_rs/session.json)
+evohome_rs login --email user@example.com
 
 # List locations
-mytcc_rs locations
+evohome_rs locations
 
 # Monitor all zones
-mytcc_rs monitor
+evohome_rs monitor
 
 # Logout (clears session)
-mytcc_rs logout
+evohome_rs logout
 ```
 
 ### Authentication
@@ -50,7 +50,7 @@ You can authenticate interactively, use secure storage, or set environment varia
 
 1. **Secure Storage (Recommended)**
    ```bash
-   mytcc_rs config set-credentials --email user@example.com
+   evohome_rs config set-credentials --email user@example.com
    ```
 
 2. **Environment Variables**
@@ -60,26 +60,26 @@ You can authenticate interactively, use secure storage, or set environment varia
 ```bash
 export EVOHOME_USER="user@example.com"
 export EVOHOME_PASSWORD="secure_password"
-mytcc_rs locations  # Works without explicit login
+evohome_rs locations  # Works without explicit login
 ```
 
 
 ### Temperature Control
 ```bash
 # Set temperature for a specific zone
-mytcc_rs set --zone-id "Living Room" --temperature 21.0
+evohome_rs set --zone-id "Living Room" --temperature 21.0
 
 # Boost all zones
-mytcc_rs boost --temp 22.0 --duration 2
+evohome_rs boost --temp 22.0 --duration 2
 
 # Enable Eco mode
-mytcc_rs eco
+evohome_rs eco
 
 # Enable Vacation mode
-mytcc_rs vacation --temp 12.0
+evohome_rs vacation --temp 12.0
 
 # Reset all zones to follow schedule
-mytcc_rs schedule
+evohome_rs schedule
 ```
 
 Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
@@ -94,7 +94,7 @@ Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clien
 ## Developing with this library
 
 ```rust
-use mytcc_rs::Client;
+use evohome_rs::Client;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -132,7 +132,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### Authentication
 
 ```rust
-use mytcc_rs::{Client, Error};
+use evohome_rs::{Client, Error};
 
 let mut client = Client::new();
 
@@ -311,7 +311,7 @@ Use this library at your own risk.
 
 ## Support
 
-For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) or the [API Documentation](https://docs.rs/mytcc_rs).
+For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) or the [API Documentation](https://docs.rs/evohome_rs).
 
 - [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
 

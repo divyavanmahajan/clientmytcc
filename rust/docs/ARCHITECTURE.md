@@ -4,7 +4,7 @@
 
 The MyTotalConnectComfort Rust client library provides a high-performance, type-safe async interface to the MyTotalConnectComfort API for the **International Honeywell Evohome** heating system. This system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. The library is designed with performance, safety, and developer experience in mind.
 
-> **Important**: This library targets the international version of the Evohome system (`international.clientmytcc.com`). North American Honeywell systems may use different APIs.
+> **Important**: This library targets the international version of the Evohome system (`international.mytotalconnectcomfort.com`). North American Honeywell systems may use different APIs.
 
 ## Design Principles
 
@@ -59,7 +59,7 @@ The MyTotalConnectComfort Rust client library provides a high-performance, type-
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │           MyTotalConnectComfort API (HTTPS)                 │
-│        https://international.clientmytcc.com      │
+│        https://international.mytotalconnectcomfort.com      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -457,7 +457,7 @@ cargo tarpaulin              # Generate coverage report
 ## Dependency Graph
 
 ```
-clientmytcc
+evohome_rs
 ├── reqwest (HTTP client)
 │   ├── tokio (async runtime)
 │   ├── serde (serialization)
@@ -474,7 +474,7 @@ clientmytcc
 
 ```toml
 [package]
-name = "clientmytcc"
+name = "evohome_rs"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.70"
@@ -505,7 +505,7 @@ All public items have documentation:
 /// # Example
 ///
 /// ```no_run
-/// use clientmytcc::Client;
+/// use evohome_rs::Client;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {

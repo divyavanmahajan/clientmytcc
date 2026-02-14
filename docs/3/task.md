@@ -1,9 +1,9 @@
-# Task: Rename package to mytcc_rs
+# Task: Rename package to evohome_rs
 
-As a developer, I want to rename the project to `mytcc_rs` for better branding and ease of use.
+As a developer, I want to rename the project to `evohome_rs` for better branding and ease of use.
 
 ## Requirements
-- Check availability of `mytcc_rs` on PyPI and crates.io (Already done, available).
+- Check availability of `evohome_rs` on PyPI and crates.io (Already done, available).
 - Rename Rust package name and library name.
 - Rename Python package name.
 - Update all code identifiers and imports.

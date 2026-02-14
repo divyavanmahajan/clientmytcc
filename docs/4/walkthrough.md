@@ -7,7 +7,7 @@
 ## 2. Updated CLI
 - Added `config` subcommand to `evohome` CLI.
 - Implemented `set-credentials` command securely prompting for password and saving it to the OS keyring.
-- Saved user email to `~/.config/mytcc_rs/config.toml` to support auto-login lookup.
+- Saved user email to `~/.config/evohome_rs/config.toml` to support auto-login lookup.
 
 ## 3. Updated Logic
 - Modified `get_authenticated_client` to include a fallback chain:

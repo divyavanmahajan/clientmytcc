@@ -2,8 +2,8 @@
 
 use clap::{Parser, Subcommand};
 use colored::*;
-use mytcc_rs::{Client, Error};
-use mytcc_rs::types::QuickAction;
+use evohome_rs::{Client, Error};
+use evohome_rs::types::QuickAction;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::path::PathBuf;
@@ -11,7 +11,7 @@ use tabled::{Table, Tabled};
 use keyring::Entry;
 
 #[derive(Parser)]
-#[command(name = "mytcc_rs")]
+#[command(name = "evohome_rs")]
 #[command(about = "MyTotalConnectComfort CLI for Evohome heating control", long_about = None)]
 #[command(version)]
 struct Cli {
@@ -206,7 +206,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     save_default_user(&email)?;
                     
                     // 2. Save password to keyring
-                    let entry = Entry::new("mytcc-rs", &email)?;
+                    let entry = Entry::new("evohome-rs", &email)?;
                     entry.set_password(&password)?;
                     
                     println!("{} Credentials saved securely", "[OK]".green());
@@ -263,10 +263,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             if permanent {
                 println!("{} Set zone {} to {}°C (permanent)", "[OK]".green(), zone_id, temp);
-                println!("{} Command to skip selection: mytcc_rs set {} {}C", "[INFO]".dimmed(), zone_id, temp);
+                println!("{} Command to skip selection: evohome_rs set {} {}C", "[INFO]".dimmed(), zone_id, temp);
             } else {
                 println!("{} Set zone {} to {}°C for {}h {}m", "[OK]".green(), zone_id, temp, h, m);
-                println!("{} Command to skip selection: mytcc_rs set {} {}C -d {} -m {}", "[INFO]".dimmed(), zone_id, temp, h, m);
+                println!("{} Command to skip selection: evohome_rs set {} {}C -d {} -m {}", "[INFO]".dimmed(), zone_id, temp, h, m);
             }
         }
 
@@ -445,7 +445,7 @@ struct Session {
 fn get_config_path() -> PathBuf {
     let mut path = dirs::home_dir().expect("Could not find home directory");
     path.push(".config");
-    path.push("mytcc_rs");
+    path.push("evohome_rs");
     std::fs::create_dir_all(&path).ok();
     path.push("session.json");
     path
@@ -501,7 +501,7 @@ async fn get_authenticated_client() -> Result<Client, Box<dyn std::error::Error>
 
     // 3. Fallback to keyring
     if let Ok(email) = load_default_user() {
-        if let Ok(entry) = Entry::new("mytcc-rs", &email) {
+        if let Ok(entry) = Entry::new("evohome-rs", &email) {
             if let Ok(password) = entry.get_password() {
                  let mut client = Client::new();
                  let (_, cookies) = client.login(&email, &password).await?;
@@ -523,13 +523,13 @@ async fn get_authenticated_client() -> Result<Client, Box<dyn std::error::Error>
         }
     }
 
-    Err(Box::new(Error::Authentication("Please login using 'mytcc_rs login', set credentials using 'mytcc_rs config set-credentials', or set EVOHOME_USER/EVOHOME_PASSWORD".to_string())))
+    Err(Box::new(Error::Authentication("Please login using 'evohome_rs login', set credentials using 'evohome_rs config set-credentials', or set EVOHOME_USER/EVOHOME_PASSWORD".to_string())))
 }
 
 fn get_settings_path() -> PathBuf {
     let mut path = dirs::home_dir().expect("Could not find home directory");
     path.push(".config");
-    path.push("mytcc_rs");
+    path.push("evohome_rs");
     std::fs::create_dir_all(&path).ok();
     path.push("config.toml");
     path
@@ -573,7 +573,7 @@ fn parse_temperature(s: &str) -> Result<f64, String> {
     }
 }
 
-fn format_zone_status_row(zone: &mytcc_rs::Zone) -> String {
+fn format_zone_status_row(zone: &evohome_rs::Zone) -> String {
     let diff = zone.target_heat_temperature - zone.temperature;
     let status = if zone.target_heat_temperature == 5.0 { "Off" } else if diff > 0.5 { "Heating" } else { "Stable" };
     let _online_str = if zone.is_alive { "Online".green() } else { "Offline".red() };
@@ -601,7 +601,7 @@ fn format_zone_status_row(zone: &mytcc_rs::Zone) -> String {
     )
 }
 
-fn format_zone_monitor_row(zone: &mytcc_rs::Zone) -> String {
+fn format_zone_monitor_row(zone: &evohome_rs::Zone) -> String {
     let diff = zone.target_heat_temperature - zone.temperature;
     let status = if zone.target_heat_temperature == 5.0 { "Off" } else if diff > 0.5 { "Heating" } else { "Stable" };
     let online_str = if zone.is_alive { "Online".green() } else { "Offline".red() };
@@ -630,7 +630,7 @@ fn format_zone_monitor_row(zone: &mytcc_rs::Zone) -> String {
     )
 }
 
-fn print_status_table(system: &mytcc_rs::Location) {
+fn print_status_table(system: &evohome_rs::Location) {
     for zone in &system.zones {
         println!("{}", format_zone_status_row(zone));
     }
@@ -639,7 +639,7 @@ fn print_status_table(system: &mytcc_rs::Location) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mytcc_rs::Zone;
+    use evohome_rs::Zone;
 
     #[test]
     fn test_format_zone_status_row() {

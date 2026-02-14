@@ -1,6 +1,6 @@
 //! Async example showing concurrent operations.
 
-use mytcc_rs::Client;
+use evohome_rs::Client;
 use tokio::try_join;
 
 #[tokio::main]

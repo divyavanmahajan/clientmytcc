@@ -67,7 +67,7 @@ Use rustdoc-style comments for all public items:
 /// # Example
 ///
 /// ```no_run
-/// use clientmytcc::Client;
+/// use evohome_rs::Client;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -98,7 +98,7 @@ pub struct Client {
 /// # Example
 ///
 /// ```no_run
-/// # use clientmytcc::Client;
+/// # use evohome_rs::Client;
 /// # #[tokio::main]
 /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// # let client = Client::new();
@@ -219,7 +219,7 @@ cargo test --test cli_integration_test -- --ignored --nocapture
 rust/
 ├── src/
 │   ├── bin/
-│   │   └── mytcc_rs.rs          # CLI with inline unit tests
+│   │   └── evohome_rs.rs          # CLI with inline unit tests
 │   └── *.rs                    # Unit tests in modules
 └── tests/
     ├── integration_test.rs     # Library integration tests
@@ -253,7 +253,7 @@ Place integration tests in `tests/` directory:
 
 ```rust
 // In tests/integration_test.rs
-use clientmytcc::{Client, Error};
+use evohome_rs::{Client, Error};
 
 #[tokio::test]
 async fn test_unauthenticated_request() {
@@ -388,7 +388,7 @@ rust/
 │   ├── error.rs            # Error types
 │   ├── types.rs            # Common types
 │   └── bin/
-│       └── mytcc_rs.rs      # CLI binary
+│       └── evohome_rs.rs      # CLI binary
 ├── tests/
 │   ├── integration_test.rs     # Library integration tests
 │   ├── cli_integration_test.rs # CLI integration tests
@@ -602,7 +602,7 @@ With LLDB:
 cargo build
 
 # Run with lldb
-rust-lldb target/debug/clientmytcc
+rust-lldb target/debug/evohome_rs
 
 # Set breakpoint
 (lldb) b client.rs:100
@@ -707,13 +707,13 @@ criterion_main!(benches);
 
 ### CLI Features
 
-The `mytcc_rs` CLI (`src/bin/mytcc_rs.rs`) includes several advanced features:
+The `evohome_rs` CLI (`src/bin/evohome_rs.rs`) includes several advanced features:
 
 #### Session Management
-- Saves session cookies to `~/.config/mytcc_rs/session.json`
+- Saves session cookies to `~/.config/evohome_rs/session.json`
 - Auto-validates session on startup
 - Falls back to environment variables if session expired
-- Supports manual login with `mytcc_rs login`
+- Supports manual login with `evohome_rs login`
 
 #### Smart Defaults
 - Auto-selects location if only one exists
@@ -735,9 +735,9 @@ The `mytcc_rs` CLI (`src/bin/mytcc_rs.rs`) includes several advanced features:
 - Provides immediate feedback on temperature changes
 
 #### Command Arguments
-- Temperature is a positional argument: `mytcc_rs boost 20C`
-- Location is an option: `mytcc_rs boost 20C --location-id 12345` or `-l 12345`
-- Duration for boost: `mytcc_rs boost 20C --duration 3`
+- Temperature is a positional argument: `evohome_rs boost 20C`
+- Location is an option: `evohome_rs boost 20C --location-id 12345` or `-l 12345`
+- Duration for boost: `evohome_rs boost 20C --duration 3`
 
 ### CLI Testing
 
@@ -748,17 +748,17 @@ Test CLI commands manually:
 cargo install --path .
 
 # Test commands
-mytcc_rs login
-mytcc_rs status
-mytcc_rs boost 20C
-mytcc_rs eco 18C
-mytcc_rs vacation 12C
-mytcc_rs set living 21C
+evohome_rs login
+evohome_rs status
+evohome_rs boost 20C
+evohome_rs eco 18C
+evohome_rs vacation 12C
+evohome_rs set living 21C
 
 # Test with options
-mytcc_rs boost 20C --duration 3
-mytcc_rs eco 18C --override
-mytcc_rs status --format json
+evohome_rs boost 20C --duration 3
+evohome_rs eco 18C --override
+evohome_rs status --format json
 ```
 
 ### Adding CLI Commands

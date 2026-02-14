@@ -1,6 +1,6 @@
 //! Basic usage example for the MyTotalConnectComfort API client.
 
-use mytcc_rs::{Client, Error};
+use evohome_rs::{Client, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

@@ -202,7 +202,7 @@ All public items have documentation:
 /// # Example
 ///
 /// ```no_run
-/// use clientmytcc::Client;
+/// use evohome_rs::Client;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -281,7 +281,7 @@ cargo fmt --check
 
 ```toml
 [package]
-name = "clientmytcc"
+name = "evohome_rs"
 version = "0.1.0"
 edition = "2021"
 description = "Async Rust client for International Honeywell Evohome API"
