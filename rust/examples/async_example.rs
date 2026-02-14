@@ -1,6 +1,6 @@
 //! Async example showing concurrent operations.
 
-use clientmytcc_rs::Client;
+use mytcc_rs::Client;
 use tokio::try_join;
 
 #[tokio::main]

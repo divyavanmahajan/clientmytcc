@@ -6,7 +6,7 @@
 //! # Example
 //!
 //! ```no_run
-//! use clientmytcc_rs::Client;
+//! use mytcc_rs::Client;
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {

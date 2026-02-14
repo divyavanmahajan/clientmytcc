@@ -2,8 +2,8 @@
 
 use clap::{Parser, Subcommand};
 use colored::*;
-use clientmytcc_rs::{Client, Error};
-use clientmytcc_rs::types::QuickAction;
+use mytcc_rs::{Client, Error};
+use mytcc_rs::types::QuickAction;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::path::PathBuf;
@@ -393,7 +393,7 @@ struct Session {
 fn get_config_path() -> PathBuf {
     let mut path = dirs::home_dir().expect("Could not find home directory");
     path.push(".config");
-    path.push("clientmytcc_rs");
+    path.push("mytcc_rs");
     std::fs::create_dir_all(&path).ok();
     path.push("session.json");
     path
@@ -478,7 +478,7 @@ fn parse_temperature(s: &str) -> Result<f64, String> {
     }
 }
 
-fn format_zone_status_row(zone: &clientmytcc_rs::Zone) -> String {
+fn format_zone_status_row(zone: &mytcc_rs::Zone) -> String {
     let diff = zone.target_heat_temperature - zone.temperature;
     let status = if zone.target_heat_temperature == 5.0 { "Off" } else if diff > 0.5 { "Heating" } else { "Stable" };
     let _online_str = if zone.is_alive { "Online".green() } else { "Offline".red() };
@@ -506,7 +506,7 @@ fn format_zone_status_row(zone: &clientmytcc_rs::Zone) -> String {
     )
 }
 
-fn format_zone_monitor_row(zone: &clientmytcc_rs::Zone) -> String {
+fn format_zone_monitor_row(zone: &mytcc_rs::Zone) -> String {
     let diff = zone.target_heat_temperature - zone.temperature;
     let status = if zone.target_heat_temperature == 5.0 { "Off" } else if diff > 0.5 { "Heating" } else { "Stable" };
     let online_str = if zone.is_alive { "Online".green() } else { "Offline".red() };
@@ -535,7 +535,7 @@ fn format_zone_monitor_row(zone: &clientmytcc_rs::Zone) -> String {
     )
 }
 
-fn print_status_table(system: &clientmytcc_rs::Location) {
+fn print_status_table(system: &mytcc_rs::Location) {
     for zone in &system.zones {
         println!("{}", format_zone_status_row(zone));
     }
@@ -544,7 +544,7 @@ fn print_status_table(system: &clientmytcc_rs::Location) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use clientmytcc_rs::Zone;
+    use mytcc_rs::Zone;
 
     #[test]
     fn test_format_zone_status_row() {

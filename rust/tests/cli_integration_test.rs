@@ -6,7 +6,7 @@
 //!
 //! Run with: cargo test --test cli_integration_test -- --ignored
 
-use clientmytcc_rs::Client;
+use mytcc_rs::Client;
 use std::collections::HashMap;
 
 /// Helper to get authenticated client from environment variables

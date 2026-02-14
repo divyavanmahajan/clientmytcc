@@ -1,6 +1,6 @@
 //! Comprehensive integration tests for the MyTotalConnectComfort client.
 
-use clientmytcc_rs::{Client, Error};
+use mytcc_rs::{Client, Error};
 use mockito::{Mock, Server};
 use serde_json::json;
 

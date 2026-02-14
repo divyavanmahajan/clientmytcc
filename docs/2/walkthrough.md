@@ -1,8 +1,7 @@
-# Walkthrough: Renaming Rust Package to clientmytcc-rs (Issue #2)
+# Walkthrough: Finalizing Package Metadata (Issue #2 & #3)
 
-1. **Renamed Cargo Package**: Updated `rust/Cargo.toml` to set `name = "clientmytcc-rs"`.
-2. **Renamed Library Crate**: Updated the `[lib]` section in `rust/Cargo.toml` to `name = "clientmytcc_rs"` ensuring internal Rust identifiers remain valid.
-3. **Updated References**: Performed a global search and replace across all `.rs` files to update imports and documentation examples from `clientmytcc` to `clientmytcc_rs`.
-4. **Updated Documentation**: Updated `README.md` badges and installation examples to reflect the new package name on crates.io.
-5. **Validated Build**: Successfully ran `cargo build` and `cargo test` to confirm the name change didn't break functionality.
-6. **Bumped Version to 0.1.11**: Prepared both Rust and Python metadata for a consistent 0.1.11 release.
+1. **Updated Cargo Metadata**: Specifically updated the `repository`, `documentation`, and `homepage` fields in `rust/Cargo.toml` to point to the correct GitHub URLs and `docs.rs/clientmytcc-rs`.
+2. **Homepage Alignment**: Set the `homepage` field to point directly to the Rust-specific README on GitHub as requested.
+3. **Harmonized Versions**: Bumped both Rust and Python packages to **`v0.1.12`** to ensure all published packages have the correct metadata.
+4. **Git Sync**: Pushed all changes and the new tag `v0.1.12` to GitHub, triggering the automated PyPI publication workflow.
+5. **Verified PyPI Docs**: Confirmed that `README-PY.md` is correctly linked in the metadata for the Python package.

@@ -1,12 +1,12 @@
 [package]
-name = "clientmytcc-rs"
-version = "0.1.13"
+name = "mytcc_rs"
+version = "0.1.0"
 edition = "2021"
 authors = ["Divya van Mahajan <divyavanmahajan@users.noreply.github.com>"]
 description = "Async Rust client for the International Honeywell Evohome API (MyTotalConnectComfort) provided by Resideo"
 license = "MIT"
 repository = "https://github.com/divyavanmahajan/clientmytcc"
-documentation = "https://docs.rs/clientmytcc-rs"
+documentation = "https://docs.rs/mytcc_rs"
 homepage = "https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md"
 keywords = ["honeywell", "evohome", "heating", "api", "async"]
 categories = ["api-bindings", "asynchronous"]
@@ -32,7 +32,7 @@ mockito = "1.2"
 anyhow = "1.0"
 
 [lib]
-name = "clientmytcc_rs"
+name = "mytcc_rs"
 path = "src/lib.rs"
 
 [[example]]

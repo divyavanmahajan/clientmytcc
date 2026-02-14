@@ -1,4 +1,4 @@
-# clientmytcc-rs
+# mytcc_rs
 
 This Python package provides a fast, Rust-powered CLI for the **International Honeywell Evohome** heating system (MyTotalConnectComfort). It is a lightweight wrapper around the `evohome` binary built in Rust.
 
@@ -8,10 +8,10 @@ You can run the CLI immediately without installing it using `uvx`:
 
 ```bash
 # Login to your account
-uvx clientmytcc-rs login --email user@example.com
+uvx mytcc_rs login --email user@example.com
 
 # Check your zone temperatures
-uvx clientmytcc-rs monitor
+uvx mytcc_rs monitor
 ```
 
 ## Installation
@@ -19,9 +19,9 @@ uvx clientmytcc-rs monitor
 Install the package via `pip` or `uv`:
 
 ```bash
-pip install clientmytcc-rs
+pip install mytcc_rs
 # OR
-uv add clientmytcc-rs
+uv add mytcc_rs
 ```
 
 Once installed, you can use the `evohome` command directly:
@@ -68,7 +68,7 @@ evohome schedule
 
 ## Detailed Documentation
 
-For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) or the [API Documentation](https://docs.rs/clientmytcc-rs).
+For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) or the [API Documentation](https://docs.rs/mytcc_rs).
 
 ---
 
