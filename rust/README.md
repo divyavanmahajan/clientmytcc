@@ -28,7 +28,7 @@ tokio = { version = "1", features = ["full"] }
 ```
 
 ## CLI Usage
-The project includes a binary `evohome` for controlling your heating system from the command line.
+The project includes a binary `evohome` for controlling your heating system from the command line. Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
 
 ### Basic Commands
 ```bash
@@ -63,7 +63,16 @@ evohome vacation --temp 12.0
 evohome schedule
 ```
 
-## Quick Start
+Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
+
+## Documentation
+
+- [User Guide](docs/USER_GUIDE.md) - Comprehensive usage guide
+- [Architecture](docs/ARCHITECTURE.md) - Design and implementation details
+- [Development](docs/DEVELOPMENT.md) - Contributing and development guide
+- [API Documentation](https://docs.rs/clientmytcc) - Full API docs
+
+## Developing with this library
 
 ```rust
 use mytcc_rs::Client;
@@ -209,13 +218,6 @@ println!("Zones: {}", system.zones.len());
 - `Error::LocationNotFound` - Location not found
 - `Error::Http` - HTTP request failed
 - `Error::Json` - JSON parsing failed
-
-## Documentation
-
-- [User Guide](docs/USER_GUIDE.md) - Comprehensive usage guide
-- [Architecture](docs/ARCHITECTURE.md) - Design and implementation details
-- [Development](docs/DEVELOPMENT.md) - Contributing and development guide
-- [API Documentation](https://docs.rs/clientmytcc) - Full API docs
 
 ## Examples
 

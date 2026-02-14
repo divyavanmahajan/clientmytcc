@@ -66,9 +66,12 @@ evohome vacation --temp 12.0
 evohome schedule
 ```
 
-## Detailed Documentation
+## Detailed CLI Documentation
+Please refer to the [CLI Documentation](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/docs/CLI_GUIDE.md).
 
-For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) or the [API Documentation](https://docs.rs/mytcc_rs).
+## Rust Documentation
+
+Please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) and [API Documentation](https://docs.rs/mytcc_rs).
 
 ---
 
