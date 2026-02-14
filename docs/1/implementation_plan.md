@@ -1,11 +1,10 @@
-# Implementation Plan: Packaging Rust Binary with Maturin
+# Implementation Plan: README-PY.md for PyPI
 
 ## Goal
-Convert the existing Rust project into a Python-distributable package that installs the `evohome` binary.
+Improve the PyPI landing page for `clientmytcc-rs` by creating a Python-centric README.
 
 ## Steps
-1. **Prepare Cargo.toml**: Ensure the binary target is correctly defined. (Completed)
-2. **Create pyproject.toml**: Configure metadata and Maturin build system. (Completed)
-3. **Verify Environment**: Install `maturin` in a virtual environment. (Completed)
-4. **Development Install**: Run `maturin develop` to build and install locally. (Completed)
-5. **Verification**: Confirm the binary is accessible and functional. (Completed)
+1. **Author `rust/README-PY.md`**: Focus on `uvx` and `pip` usage.
+2. **Update Metadata**: Change `readme = "README-PY.md"` in `rust/pyproject.toml`.
+3. **Bump Version**: Increment version to `0.1.10` in `rust/Cargo.toml` and `rust/pyproject.toml` to trigger a new release.
+4. **Link Documentation**: Ensure the new README links back to the comprehensive Rust README on GitHub.
