@@ -479,7 +479,7 @@ You can authenticate interactively or using environment variables.
 
 #### Interactive Login
 ```bash
-clientmytcc login "email@example.com"
+evohome login "email@example.com"
 # You will be prompted for password
 ```
 
@@ -494,7 +494,7 @@ export EVOHOME_USER="email@example.com"
 export EVOHOME_PASSWORD="your_password"
 
 # Now you can run commands without explicit login
-clientmytcc locations
+evohome locations
 ```
 
 ## Tips

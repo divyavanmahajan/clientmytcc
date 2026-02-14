@@ -48,6 +48,22 @@ evohome monitor
 evohome logout
 ```
 
+### Authentication Options
+You can log in interactively or use environment variables to skip manual login:
+
+- **`EVOHOME_USER`** (or `EVOHOME_EMAIL`): Your email address
+- **`EVOHOME_PASSWORD`**: Your password
+
+```bash
+# Example with environment variables
+export EVOHOME_USER="user@example.com"
+export EVOHOME_PASSWORD="secure_password"
+
+# Now you can run commands directly without 'login'
+evohome locations
+```
+
+
 ### Temperature Control
 ```bash
 # Set temperature for a specific zone

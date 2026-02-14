@@ -45,6 +45,19 @@ evohome monitor
 evohome logout
 ```
 
+### Authentication
+You can authenticate interactively using `evohome login`, or by setting environment variables:
+
+- **`EVOHOME_USER`** (or `EVOHOME_EMAIL`): Your email address
+- **`EVOHOME_PASSWORD`**: Your password
+
+```bash
+export EVOHOME_USER="user@example.com"
+export EVOHOME_PASSWORD="secure_password"
+evohome locations  # Works without explicit login
+```
+
+
 ### Temperature Control
 ```bash
 # Set temperature for a specific zone
