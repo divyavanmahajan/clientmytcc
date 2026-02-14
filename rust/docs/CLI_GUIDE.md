@@ -483,6 +483,19 @@ evohome login "email@example.com"
 # You will be prompted for password
 ```
 
+#### Secure Credentials Storage
+You can securely store your credentials in the OS keyring (macOS Keychain, Windows Credential Manager, etc.) to enable seamless auto-login.
+
+```bash
+evohome config set-credentials --email user@example.com
+# You will be prompted for your password securely
+```
+
+Once set, you can run any command without `login` or environment variables:
+```bash
+evohome locations
+```
+
 #### Environment Variables (Auto-Login)
 You can set the following environment variables to avoid logging in manually or to enable auto-login if your session expires:
 

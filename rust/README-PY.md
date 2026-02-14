@@ -49,10 +49,16 @@ evohome logout
 ```
 
 ### Authentication Options
-You can log in interactively or use environment variables to skip manual login:
+You can log in interactively, use secure credentials storage, or use environment variables to skip manual login:
 
-- **`EVOHOME_USER`** (or `EVOHOME_EMAIL`): Your email address
-- **`EVOHOME_PASSWORD`**: Your password
+1. **Secure Storage (Recommended)**
+   ```bash
+   evohome config set-credentials --email user@example.com
+   ```
+
+2. **Environment Variables**
+   - **`EVOHOME_USER`** (or `EVOHOME_EMAIL`): Your email address
+   - **`EVOHOME_PASSWORD`**: Your password
 
 ```bash
 # Example with environment variables

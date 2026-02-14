@@ -46,10 +46,16 @@ evohome logout
 ```
 
 ### Authentication
-You can authenticate interactively using `evohome login`, or by setting environment variables:
+You can authenticate interactively, use secure storage, or set environment variables:
 
-- **`EVOHOME_USER`** (or `EVOHOME_EMAIL`): Your email address
-- **`EVOHOME_PASSWORD`**: Your password
+1. **Secure Storage (Recommended)**
+   ```bash
+   evohome config set-credentials --email user@example.com
+   ```
+
+2. **Environment Variables**
+   - **`EVOHOME_USER`** (or `EVOHOME_EMAIL`): Your email address
+   - **`EVOHOME_PASSWORD`**: Your password
 
 ```bash
 export EVOHOME_USER="user@example.com"

@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use std::path::PathBuf;
 use tabled::{Table, Tabled};
+use keyring::Entry;
 
 #[derive(Parser)]
 #[command(name = "evohome")]
@@ -95,6 +96,21 @@ enum Commands {
         #[arg(short, long)]
         location_id: Option<String>,
     },
+    
+    /// Configuration management
+    Config {
+        #[command(subcommand)]
+        command: ConfigCommands,
+    },
+}
+
+#[derive(Subcommand)]
+enum ConfigCommands {
+    /// Save credentials securely to the OS keyring
+    SetCredentials {
+        #[arg(short, long)]
+        email: Option<String>,
+    },
 }
 
 #[derive(Tabled)]
@@ -156,12 +172,48 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let config_path = get_config_path();
             if config_path.exists() {
                 std::fs::remove_file(&config_path)?;
-                println!("{} Logged out and session cleared", "[OK]".green());
+                println!("{} Session cleared", "[OK]".green());
             } else {
                 println!("{} No active session found", "[INFO]".dimmed());
             }
+            // Also try to clear credentials if they exist? Maybe not for logout, only session.
+            // But let's mention it.
         }
 
+        Commands::Config { command } => {
+            match command {
+                ConfigCommands::SetCredentials { email } => {
+                    let email = email.ok_or_else(|| {
+                        eprint!("Email: ");
+                        std::io::Write::flush(&mut std::io::stdout()).unwrap();
+                        let mut s = String::new();
+                        std::io::stdin().read_line(&mut s).unwrap();
+                        s.trim().to_string()
+                    })?; // Changed to `?` to propagate error if prompt fails
+                    
+                    if email.is_empty() {
+                        eprintln!("{} Email is required", "[ERROR]".red());
+                        std::process::exit(1);
+                    }
+                    
+                    let password = rpassword::prompt_password("Password: ")?;
+                    if password.is_empty() {
+                        eprintln!("{} Password is required", "[ERROR]".red());
+                        std::process::exit(1);
+                    }
+                    
+                    // 1. Save email to config
+                    save_default_user(&email)?;
+                    
+                    // 2. Save password to keyring
+                    let entry = Entry::new("mytcc-rs", &email)?;
+                    entry.set_password(&password)?;
+                    
+                    println!("{} Credentials saved securely", "[OK]".green());
+                }
+            }
+        }
+        
         Commands::Locations => {
             let client = get_authenticated_client().await?;
             let locations = client.get_locations().await?;
@@ -447,20 +499,63 @@ async fn get_authenticated_client() -> Result<Client, Box<dyn std::error::Error>
         }
     }
 
-    // 3. Fallback to env vars
+    // 3. Fallback to keyring
+    if let Ok(email) = load_default_user() {
+        if let Ok(entry) = Entry::new("mytcc-rs", &email) {
+            if let Ok(password) = entry.get_password() {
+                 let mut client = Client::new();
+                 let (_, cookies) = client.login(&email, &password).await?;
+                 save_session(&email, cookies)?;
+                 return Ok(client);
+            }
+        }
+    }
+
+    // 4. Fallback to env vars
     match try_env_login().await {
         Ok(client) => {
             eprintln!("{} Auto-logged in using environment variables", "[OK]".green());
-            Ok(client)
+            return Ok(client);
         }
         Err(_) => {
-            eprintln!(
-                "{} Not authenticated. Please run 'evohome login' or set EVOHOME_USER/EVOHOME_PASSWORD.",
-                "[ERROR]".red()
-            );
-            std::process::exit(1);
+             // If all validation fails and we have a session, maybe it just expired.
+             // But we handled that in step 2.
         }
     }
+
+    Err(Box::new(Error::Authentication("Please login using 'evohome login', set credentials using 'evohome config set-credentials', or set EVOHOME_USER/EVOHOME_PASSWORD".to_string())))
+}
+
+fn get_settings_path() -> PathBuf {
+    let mut path = dirs::home_dir().expect("Could not find home directory");
+    path.push(".config");
+    path.push("mytcc_rs");
+    std::fs::create_dir_all(&path).ok();
+    path.push("config.toml");
+    path
+}
+
+#[derive(Serialize, Deserialize)]
+struct Config {
+    default_user: Option<String>,
+}
+
+fn save_default_user(email: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let path = get_settings_path();
+    let config = Config { default_user: Some(email.to_string()) };
+    let toml = toml::to_string(&config)?;
+    std::fs::write(path, toml)?;
+    Ok(())
+}
+
+fn load_default_user() -> Result<String, Box<dyn std::error::Error>> {
+    let path = get_settings_path();
+    if !path.exists() {
+        return Err("Config not found".into());
+    }
+    let content = std::fs::read_to_string(path)?;
+    let config: Config = toml::from_str(&content)?;
+    config.default_user.ok_or_else(|| "No default user set".into())
 }
 
 // --- Helpers ---
@@ -610,6 +705,14 @@ mod tests {
         assert!(output.contains("Stable"));
         assert!(output.contains("Offline"));
         assert!(output.contains("67890"));
+    }
+
+    #[test]
+    fn test_parse_temperature() {
+        assert!((parse_temperature("21").unwrap() - 21.0).abs() < 0.001);
+        assert!((parse_temperature("21.5C").unwrap() - 21.5).abs() < 0.001);
+        assert!((parse_temperature("70F").unwrap() - 21.111).abs() < 0.001);
+        assert!(parse_temperature("invalid").is_err());
     }
 }
 
