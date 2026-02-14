@@ -290,8 +290,8 @@ Use this library at your own risk.
 
 ## Support
 
-- [API Documentation](../api/API_DOCUMENTATION.md)
-- [OpenAPI Specification](../api/openapi-spec.yaml)
+For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) or the [API Documentation](https://docs.rs/clientmytcc-rs).
+
 - [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
 
 ## Acknowledgments

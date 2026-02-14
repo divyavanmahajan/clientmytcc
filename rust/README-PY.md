@@ -30,16 +30,45 @@ Once installed, you can use the `evohome` command directly:
 evohome --help
 ```
 
-## Features
+## CLI Usage
+The project includes a binary `evohome` for controlling your heating system from the command line.
 
-- **Blazing Fast**: Core logic implemented in async Rust.
-- **Cross-Platform**: Pre-built wheels for Linux, macOS, and Windows.
-- **Full Control**: Support for listing locations, monitoring zones, setting temperatures, and managing schedules.
-- **Session Management**: Automatic and secure session handling.
+### Basic Commands
+```bash
+# Login (saves session to ~/.config/clientmytcc/session.json)
+evohome login --email user@example.com
+
+# List locations
+evohome locations
+
+# Monitor all zones
+evohome monitor
+
+# Logout (clears session)
+evohome logout
+```
+
+### Temperature Control
+```bash
+# Set temperature for a specific zone
+evohome set --zone-id "Living Room" --temperature 21.0
+
+# Boost all zones
+evohome boost --temp 22.0 --duration 2
+
+# Enable Eco mode
+evohome eco
+
+# Enable Vacation mode
+evohome vacation --temp 12.0
+
+# Reset all zones to follow schedule
+evohome schedule
+```
 
 ## Detailed Documentation
 
-For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md).
+For a full list of commands, API details, and Rust library usage, please refer to the main [Rust README.md](https://github.com/divyavanmahajan/clientmytcc/blob/main/rust/README.md) or the [API Documentation](https://docs.rs/clientmytcc-rs).
 
 ---
 

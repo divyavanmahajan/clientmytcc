@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "clientmytcc-rs"
-version = "0.1.12"
+version = "0.1.13"
 description = "MyTotalConnectComfort CLI for Evohome heating control (Rust implementation)"
 requires-python = ">=3.7"
 authors = [
