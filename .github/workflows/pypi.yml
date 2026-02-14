@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels-linux-${{ matrix.target }}
-          path: rust/dist
+          path: rust/dist/*
 
   windows:
     runs-on: windows-latest
@@ -53,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels-windows-${{ matrix.target }}
-          path: rust/dist
+          path: rust/dist/*
 
   macos:
     runs-on: macos-latest
@@ -75,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels-macos-${{ matrix.target }}
-          path: rust/dist
+          path: rust/dist/*
 
   sdist:
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels-sdist
-          path: rust/dist
+          path: rust/dist/*
 
   release:
     name: Release
@@ -101,7 +101,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          merged: true
+          pattern: wheels-*
+          merge-multiple: true
           path: dist
       - name: Publish to PyPI
         uses: PyO3/maturin-action@v1
