@@ -33,6 +33,42 @@ cd clientmytcc/python
 pip install -e .
 ```
 
+## CLI Usage
+The package includes a command-line interface (CLI) for controlling your heating system directly from the terminal.
+
+### Basic Commands
+```bash
+# Login (saves session to ~/.config/clientmytcc/session.json)
+clientmytcc login --email user@example.com
+
+# List locations
+clientmytcc locations
+
+# Monitor all zones in the first location
+clientmytcc monitor
+
+# Logout (clears session)
+clientmytcc logout
+```
+
+### Temperature Control
+```bash
+# Set temperature for a specific zone
+clientmytcc set --zone "Living Room" --temp 21.0
+
+# Boost all zones in a location
+clientmytcc boost --temp 22.0 --duration 2
+
+# Enable Eco mode (lowers temp to 18.0°C)
+clientmytcc eco
+
+# Enable Vacation mode (lowers temp to 12.0°C)
+clientmytcc vacation --temp 12.0
+
+# Reset all zones to follow schedule
+clientmytcc schedule
+```
+
 ## Quick Start
 
 ```python

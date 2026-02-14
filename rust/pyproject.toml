@@ -1,0 +1,17 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "evohome-rs"
+version = "0.1.0"
+description = "MyTotalConnectComfort CLI for Evohome heating control (Rust implementation)"
+requires-python = ">=3.7"
+authors = [
+    { name = "Divya van Mahajan", email = "divyavanmahajan@users.noreply.github.com" }
+]
+license = { text = "MIT" }
+readme = "README.md"
+
+[tool.maturin]
+bindings = "bin"

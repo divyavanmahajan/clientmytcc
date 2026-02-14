@@ -19,6 +19,7 @@ from .exceptions import (
 )
 from .config import Config
 from .utils import TemperatureType, DurationType, fahrenheit_to_celsius
+from .session import save_session, load_session, clear_session
 
 console = Console()
 config = Config()
@@ -26,7 +27,31 @@ config = Config()
 
 import time
 
-@click.group()
+class AliasedGroup(click.Group):
+    def command(self, *args, **kwargs):
+        aliases = kwargs.pop('aliases', [])
+        decorator = super().command(*args, **kwargs)
+        def _decorator(f):
+            cmd = decorator(f)
+            cmd.aliases = aliases
+            return cmd
+        return _decorator
+
+    def get_command(self, ctx, cmd_name):
+        rv = super().get_command(ctx, cmd_name)
+        if rv is not None:
+            return rv
+        for name, cmd in self.commands.items():
+            if hasattr(cmd, 'aliases') and cmd_name in cmd.aliases:
+                return cmd
+        return None
+
+    def resolve_command(self, ctx, args):
+        # Always return the full command name, not the alias
+        _, cmd, args = super().resolve_command(ctx, args)
+        return cmd.name, cmd, args
+
+@click.group(cls=AliasedGroup)
 @click.version_option()
 @click.pass_context
 def cli(ctx):
@@ -66,6 +91,9 @@ def login(email: Optional[str], password: Optional[str]):
         config.set("email", email)
         config.save()
         
+        # Save session
+        save_session(email, client.cookies)
+        
         rprint(f"[green][OK][/green] Logged in as: {result['DisplayName']}")
         rprint(f"[dim]User ID: {result['UserId']}[/dim]")
     except AuthenticationError as e:
@@ -81,6 +109,7 @@ def logout():
     """Clear stored credentials."""
     config.clear()
     config.save()
+    clear_session()
     rprint("[green][OK][/green] Logged out")
 
 
@@ -146,7 +175,7 @@ def set(zone_id: Optional[str], temperature: Optional[float], duration: Optional
         
         # If zone_id not provided, help user select
         if not zone_id:
-            location_id = _select_location(client, location_id)
+            (location_id,location_name) = _select_location(client, location_id)
             zone_id = _select_zone(client, location_id)
         
         # If temperature not provided, prompt
@@ -196,7 +225,7 @@ def boost(ctx, temp: float, location_id: Optional[str], duration: float, overrid
     """Boost all zones in a location."""
     try:
         client = _get_authenticated_client()
-        location_id = _select_location(client, location_id)
+        (location_id,location_name) = _select_location(client, location_id)
         system = client.get_location_system(location_id)
         
         count = 0
@@ -238,7 +267,7 @@ def eco(ctx, temp: float, location_id: Optional[str], override: bool):
     """Set all zones to energy-saving temperature."""
     try:
         client = _get_authenticated_client()
-        location_id = _select_location(client, location_id)
+        (location_id,location_name) = _select_location(client, location_id)
         system = client.get_location_system(location_id)
         
         count = 0
@@ -276,15 +305,15 @@ def monitor(location_id: Optional[str], format: str):
     """Monitor zone temperatures (alias: zones)."""
     try:
         client = _get_authenticated_client()
-        location_id = _select_location(client, location_id)
+        (location_id,location_name) = _select_location(client, location_id)
         system = client.get_location_system(location_id)
         
         if format == "json":
             report = []
             for zone in system.zones:
                 diff = zone.target_temperature - zone.temperature
-                status = "heating" if diff > 0.5 else "stable"
-                report.append({
+                status = "off" if zone.target_temperature == 5.0 else "heating" if diff > 0.5 else "stable"
+                report.append({ 
                     "name": zone.name,
                     "current": zone.temperature,
                     "target": zone.target_temperature,
@@ -293,7 +322,7 @@ def monitor(location_id: Optional[str], format: str):
                 })
             print(json.dumps(report, indent=2))
         else:
-            table = Table(title=f"Temperature Monitor: {system.name}")
+            table = Table(title=f"Temperature Monitor: {location_name}")
             table.add_column("Zone", style="green")
             table.add_column("Current", justify="right")
             table.add_column("Target", justify="right")
@@ -304,14 +333,22 @@ def monitor(location_id: Optional[str], format: str):
             
             for zone in system.zones:
                 diff = zone.target_temperature - zone.temperature
-                status = "Heating" if diff > 0.5 else "Stable"
+                status = "Off" if zone.target_temperature == 5.0 else "Heating" if diff > 0.5 else "Stable"
                 online = "[green]Online[/green]" if zone.is_alive else "[red]Offline[/red]"
+                
+                # Format temperature, 128.0 means invalid/offline
+                if zone.temperature >= 128.0:
+                    current_temp = "--"
+                    diff_str = "--"
+                else:
+                    current_temp = f"{zone.temperature:.1f}°C"
+                    diff_str = f"{diff:+.1f}°C"
                 
                 table.add_row(
                     zone.name,
-                    f"{zone.temperature:.1f}°C",
+                    current_temp,
                     f"{zone.target_temperature:.1f}°C",
-                    f"{diff:+.1f}°C",
+                    diff_str,
                     status,
                     online,
                     str(zone.id)
@@ -332,7 +369,7 @@ def vacation(ctx, temp: float, location_id: Optional[str], override: bool):
     """Set all zones to frost protection (vacation mode)."""
     try:
         client = _get_authenticated_client()
-        location_id = _select_location(client, location_id)
+        (location_id,location_name) = _select_location(client, location_id)
         system = client.get_location_system(location_id)
         
         count = 0
@@ -369,7 +406,7 @@ def schedule(location_id: Optional[str]):
     """Reset all zones to follow their programmed schedule."""
     try:
         client = _get_authenticated_client()
-        location_id = _select_location(client, location_id)
+        (location_id,location_name) = _select_location(client, location_id)
         system = client.get_location_system(location_id)
         
         count = 0
@@ -381,6 +418,7 @@ def schedule(location_id: Optional[str]):
                     zone_id=zone.id,
                     temperature=0,  # Temperature ignored when following schedule
                     permanent=False,
+                    is_following_schedule=True,
                     duration_hours=0,
                     duration_minutes=0
                 )
@@ -421,6 +459,9 @@ def config_get(key: str):
         sys.exit(1)
 
 
+# Global cache for authenticated client
+_cached_client: Optional[Client] = None
+
 @config_cmd.command("list")
 def config_list():
     """List all configuration."""
@@ -433,7 +474,25 @@ def config_list():
 
 
 def _get_authenticated_client() -> Client:
-    """Get an authenticated client instance."""
+    """Get an authenticated client instance, using a cached client if available."""
+    global _cached_client
+    if _cached_client is not None:
+        return _cached_client
+
+    # 1. Try loading session
+    session = load_session()
+    if session:
+        from .session import cookies_to_dict
+        client = Client(cookies=cookies_to_dict(session.cookies))
+        try:
+            # Validate session with a lightweight call
+            client.get_account_info()
+            _cached_client = client
+            return client
+        except (MyTotalConnectComfortError, Exception):
+            rprint("[yellow][WARNING][/yellow] Session expired, attempting auto-login...")
+            # Fall through to env var login
+
     # Try to get email from config or env
     email = config.get("email")
     if not email:
@@ -448,8 +507,6 @@ def _get_authenticated_client() -> Client:
     
     if not password:
         # If no password in env, we can't auto-login without session persistence
-        # Since session persistence isn't fully implemented in Python yet (cookies not saved),
-        # we have to rely on env vars for now if we want "auto-login" behavior.
         rprint("[red][ERROR][/red] Session expired and EVOHOME_PASSWORD not set.")
         rprint("[yellow]Please run 'clientmytcc login' or set EVOHOME_PASSWORD.[/yellow]")
         sys.exit(1)
@@ -457,13 +514,16 @@ def _get_authenticated_client() -> Client:
     try:
         client = Client()
         client.login(email, password)
+        # Save session for next time
+        save_session(email, client.cookies)
+        _cached_client = client
         return client
     except AuthenticationError as e:
         rprint(f"[red][ERROR][/red] Auto-login failed: {e}")
         sys.exit(1)
 
-
-def _select_location(client: Client, location_id: Optional[str] = None) -> str:
+_cached_location: Optional[Location] = None
+def _select_location(client: Client, location_id: Optional[str] = None) -> tuple[str, str]:
     """Select a location, using smart defaults.
     
     Args:
@@ -473,13 +533,16 @@ def _select_location(client: Client, location_id: Optional[str] = None) -> str:
     Returns:
         Selected location ID
     """
-    if location_id:
-        return location_id
+    global _cached_location
+    if _cached_location:
+        return (_cached_location.id, _cached_location.name)
     
+
     # Check config for default
-    default_location = config.get("default_location")
-    if default_location:
-        return default_location
+    if location_id is None or not isinstance(location_id, str):
+        default_location = config.get("default_location")
+        if default_location:
+            location_id= default_location
     
     # Get all locations
     locations = client.get_locations()
@@ -488,10 +551,17 @@ def _select_location(client: Client, location_id: Optional[str] = None) -> str:
         rprint("[red][ERROR][/red] No locations found")
         sys.exit(1)
     
+    # Check location is valid
+    for i, loc in enumerate(locations, 1):
+        if loc.id == location_id:
+            _cached_location= loc
+            return (_cached_location.id, _cached_location.name)
+        rprint(f"  {i}. {loc.name} ({loc.city or 'Unknown'})")
     # Auto-select if only one location
     if len(locations) == 1:
         rprint(f"[dim]Using location: {locations[0].name}[/dim]")
-        return locations[0].id
+        _cached_location= locations[0]
+        return (_cached_location.id, _cached_location.name)
     
     # Multiple locations - let user select
     rprint("[bold]Select a location:[/bold]")
@@ -504,7 +574,8 @@ def _select_location(client: Client, location_id: Optional[str] = None) -> str:
             if 1 <= choice <= len(locations):
                 selected = locations[choice - 1]
                 rprint(f"[green]Selected:[/green] {selected.name}")
-                return selected.id
+                _cached_location= selected
+                return (_cached_location.id, _cached_location.name)
             else:
                 rprint(f"[red]Please enter a number between 1 and {len(locations)}[/red]")
         except (ValueError, click.Abort):
@@ -544,10 +615,8 @@ def _select_zone(client: Client, location_id: str, zone_id: Optional[str] = None
                 rprint(f"[yellow]Multiple zones match '{zone_id}':[/yellow]")
                 for i, zone in enumerate(matches, 1):
                     status = "[green]Online[/green]" if zone.is_alive else "[red]Offline[/red]"
-                    # rprint(f"  {i}. {zone.name} ({zone.temperature}°C) {status}")
-                    # rprint(f"  {i}. {zone.name} ({zone.temperature}°C) {status}")
-                    # rprint(f"  {i}. {zone.name} ({zone.temperature}°C) {status}")
-                    rprint(f"{i:>2}.  {zone.id:>8}: ({zone.temperature:>5.1f}°C --> {zone.target_temperature:>5.1f}°C) {zone.name:<20}")
+                    current_temp = "--" if zone.temperature >= 128.0 else f"{zone.temperature:>5.1f}°C"
+                    rprint(f"{i:>2}.  {zone.id:>8}: ({current_temp} --> {zone.target_temperature:>5.1f}°C) {zone.name:<20}")
                 
                 while True:
                     try:
@@ -577,10 +646,8 @@ def _select_zone(client: Client, location_id: str, zone_id: Optional[str] = None
     rprint(f"[bold]Select a zone in {system.name}:[/bold]")
     for i, zone in enumerate(system.zones, 1):
         status = "[green]Online[/green]" if zone.is_alive else "[red]Offline[/red]"
-        # rprint(f"  {i}. {zone.name} ({zone.temperature}°C) {status}")
-        # rprint(f"  {i}. {zone.name} ({zone.temperature}°C) {status}")
-        # rprint(f"  {i}. {zone.name} ({zone.temperature}°C) {status}")
-        rprint(f"{i:>2}.  {zone.id:>8}: ({zone.temperature:>5.1f}°C --> {zone.target_temperature:>5.1f}°C) {zone.name:<20}")
+        current_temp = "--" if zone.temperature >= 128.0 else f"{zone.temperature:>5.1f}°C"
+        rprint(f"{i:>2}.  {zone.id:>8}: ({current_temp} --> {zone.target_temperature:>5.1f}°C) {zone.name:<20}")
     
     while True:
         try:

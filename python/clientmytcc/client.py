@@ -30,17 +30,28 @@ class Client:
     
     BASE_URL = "https://international.mytotalconnectcomfort.com"
     
-    def __init__(self):
-        """Initialize the client with a requests session."""
+    def __init__(self, cookies: Optional[Dict[str, str]] = None):
+        """
+        Initialize the client with a requests session.
+        
+        Args:
+            cookies: Optional dictionary of cookies to initialize the session with
+        """
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15",
             "Accept": "*/*",
             "X-Requested-With": "XMLHttpRequest",
         })
+        
+        if cookies:
+            self.session.cookies.update(cookies)
+            self._authenticated = True
+        else:
+            self._authenticated = False
+            
         self._csrf_token: Optional[str] = None
         self._anti_forgery_token: Optional[str] = None
-        self._authenticated = False
     
     def login(self, email: str, password: str) -> Dict[str, Any]:
         """
@@ -98,11 +109,16 @@ class Client:
         data = response.json()
         
         if data.get("Errors"):
-            error_msg = "; ".join([e.get("Message", str(e)) for e in data["Errors"]])
+            error_msg = "; ".join([e.get("Message", str(e)) if isinstance(e, dict) else str(e) for e in data["Errors"]])
             raise AuthenticationError(f"Login failed: {error_msg}")
         
         self._authenticated = True
         return data.get("Content", {})
+    
+    @property
+    def cookies(self) -> Dict[str, str]:
+        """Get the current session cookies."""
+        return self.session.cookies.get_dict()
     
     def logout(self):
         """Logout from the API.
@@ -283,6 +299,7 @@ class Client:
         duration_hours: int = 0,
         duration_minutes: int = 0,
         location_time_offset_minutes: int = 60,
+        is_following_schedule: bool = False,
     ) -> None:
         """
         Set the target temperature for a heating zone.
@@ -307,7 +324,7 @@ class Client:
             "setUntilHours": f"{duration_hours:02d}",
             "setUntilMinutes": f"{duration_minutes:02d}",
             "locationTimeOffsetMinutes": location_time_offset_minutes,
-            "isFollowingSchedule": False,
+            "isFollowingSchedule": is_following_schedule,
         }
         
         self._make_request("POST", "/api/ZonesApi/SetZoneTemperature", json_data=payload)

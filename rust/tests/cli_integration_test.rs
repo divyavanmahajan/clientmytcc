@@ -42,7 +42,7 @@ async fn restore_zone_temperatures(
 ) -> Result<(), Box<dyn std::error::Error>> {
     for (zone_id, temp) in temps {
         client
-            .set_zone_temperature(zone_id, *temp, true, 0, 0)
+            .set_zone_temperature(zone_id, *temp, true, 0, 0, false)
             .await?;
     }
     Ok(())

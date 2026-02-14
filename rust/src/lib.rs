@@ -28,6 +28,7 @@
 //!         true,  // permanent
 //!         0,     // hours
 //!         0,     // minutes
+//!         false, // is_following_schedule
 //!     ).await?;
 //!     
 //!     Ok(())

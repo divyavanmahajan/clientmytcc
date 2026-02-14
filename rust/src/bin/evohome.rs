@@ -3,6 +3,7 @@
 use clap::{Parser, Subcommand};
 use colored::*;
 use clientmytcc::{Client, Error};
+use clientmytcc::types::QuickAction;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::path::PathBuf;
@@ -87,6 +88,12 @@ enum Commands {
         temp: String,
         #[arg(long)]
         override_: bool,
+    },
+
+    /// Reset all zones to follow their programmed schedule
+    Schedule {
+        #[arg(short, long)]
+        location_id: Option<String>,
     },
 }
 
@@ -200,7 +207,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 (None, None) => (true, 0, 0),
             };
 
-            client.set_zone_temperature(&zone_id, temp, permanent, h, m).await?;
+            client.set_zone_temperature(&zone_id, temp, permanent, h, m, false).await?;
 
             if permanent {
                 println!("{} Set zone {} to {}°C (permanent)", "[OK]".green(), zone_id, temp);
@@ -230,7 +237,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     }
 
-                    client.set_zone_temperature(&zone.id, temp, false, duration, 0).await
+                    client.set_zone_temperature(&zone.id, temp, false, duration, 0, false).await
                         .map_err(|e| format!("Failed to set temperature for zone {}: {}", zone.name.as_deref().unwrap_or("Unknown"), e))?;
                     count += 1;
                     println!("{} Boosted {} to {}°C for {}h", "[OK]".green(), zone.name.as_deref().unwrap_or("Unknown"), temp, duration);
@@ -264,7 +271,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     }
 
-                    client.set_zone_temperature(&zone.id, temp, true, 0, 0).await?;
+                    client.set_zone_temperature(&zone.id, temp, true, 0, 0, false).await?;
                     count += 1;
                     println!("{} Set {} to eco mode", "[OK]".green(), zone.name.as_deref().unwrap_or("Unknown"));
                 }
@@ -284,8 +291,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let system = client.get_location_system(&location_id).await?;
 
             if format == "json" {
-                println!("{}", serde_json::to_string_pretty(&system.zones).unwrap());
+                println!("{}", serde_json::to_string_pretty(&system).unwrap());
             } else {
+                // Show Quick Action status if active
+                if let Some(status) = &system.system_mode_status {
+                    let action = status.action();
+                    if action != QuickAction::Auto {
+                        let perm_str = if status.is_permanent { "Permanent" } else { "Temporary" };
+                        println!("{} Active System Mode: {} ({})", "[INFO]".blue(), action, perm_str);
+                        println!();
+                    }
+                }
+
                 loop {
                     // In a real monitor we'd refresh, but for now just show once or loop?
                     // The original code just showed it once. Let's keep it simple.
@@ -315,7 +332,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         continue;
                     }
 
-                    client.set_zone_temperature(&zone.id, temp, true, 0, 0).await?;
+                    client.set_zone_temperature(&zone.id, temp, true, 0, 0, false).await?;
                     count += 1;
                 }
             }
@@ -331,6 +348,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!();
             let system = client.get_location_system(&location_id).await?;
             print_status_table(&system);
+        }
+
+        Commands::Schedule { location_id } => {
+            let client = get_authenticated_client().await?;
+            let location_id = select_location(&client, location_id).await?;
+            let system = client.get_location_system(&location_id).await?;
+
+            let mut count = 0;
+            for zone in &system.zones {
+                if zone.is_alive {
+                    // Set to follow schedule by setting permanent=False with 0 duration
+                    // and is_following_schedule=True
+                    client.set_zone_temperature(
+                        &zone.id, 
+                        0.0,   // Temperature ignored when following schedule
+                        false, // permanent
+                        0,     // duration_hours
+                        0,     // duration_minutes
+                        true   // is_following_schedule
+                    ).await?;
+                    count += 1;
+                    println!("{} {} now following schedule", "[OK]".green(), zone.name.as_deref().unwrap_or("Unknown"));
+                }
+            }
+
+            println!("\n{} Reset {} zones to follow schedule", "[OK]".green().bold(), count);
         }
     }
 
@@ -437,15 +480,27 @@ fn parse_temperature(s: &str) -> Result<f64, String> {
 
 fn format_zone_status_row(zone: &clientmytcc::Zone) -> String {
     let diff = zone.target_heat_temperature - zone.temperature;
-    let status = if diff > 0.5 { "Heating" } else { "Stable" };
+    let status = if zone.target_heat_temperature == 5.0 { "Off" } else if diff > 0.5 { "Heating" } else { "Stable" };
     let _online_str = if zone.is_alive { "Online".green() } else { "Offline".red() };
     
+    let temp_str = if zone.temperature >= 128.0 {
+        "--".to_string()
+    } else {
+        format!("{:>5.1}°C", zone.temperature)
+    };
+
+    let diff_str = if zone.temperature >= 128.0 {
+        "--".to_string()
+    } else {
+        format!("{:>+6.1}°C", diff)
+    };
+    
     format!(
-        "{:<20} ({:>5.1}°C --> {:>5.1}°C) {:>+6.1}°C {:<8} {:>8}",
+        "{:<20} ({} -> {:>5.1}°C) {} {:<8} {:>8}",
         zone.name.as_deref().unwrap_or("Unknown").bold(),
-        zone.temperature,
+        temp_str,
         zone.target_heat_temperature,
-        diff,
+        diff_str,
         status.yellow(),
         zone.id
     )
@@ -453,15 +508,27 @@ fn format_zone_status_row(zone: &clientmytcc::Zone) -> String {
 
 fn format_zone_monitor_row(zone: &clientmytcc::Zone) -> String {
     let diff = zone.target_heat_temperature - zone.temperature;
-    let status = if diff > 0.5 { "Heating" } else { "Stable" };
+    let status = if zone.target_heat_temperature == 5.0 { "Off" } else if diff > 0.5 { "Heating" } else { "Stable" };
     let online_str = if zone.is_alive { "Online".green() } else { "Offline".red() };
     
+    let temp_str = if zone.temperature >= 128.0 {
+        "--".to_string()
+    } else {
+        format!("{:>5.1}°C", zone.temperature)
+    };
+
+    let diff_str = if zone.temperature >= 128.0 {
+        "--".to_string()
+    } else {
+        format!("{:>+6.1}°C", diff)
+    };
+    
     format!(
-        "{:<20} ({:>5.1}°C --> {:>5.1}°C) {:>+6.1}°C {:<8} {:<8} {:>8}",
+        "{:<20} ({} -> {:>5.1}°C) {} {:<8} {:<8} {:>8}",
         zone.name.as_deref().unwrap_or("Unknown").bold(),
-        zone.temperature,
+        temp_str,
         zone.target_heat_temperature,
-        diff,
+        diff_str,
         status.yellow(),
         online_str,
         zone.id
@@ -614,11 +681,12 @@ async fn select_zone(client: &Client, location_id: &str, id: Option<String>) -> 
         } else {
             println!("{}", format!("Multiple zones match '{}':", id).yellow());
             for (i, zone) in matches.iter().enumerate() {
+                let temp_str = if zone.temperature >= 128.0 { "--".to_string() } else { format!("{:>5.1}°C", zone.temperature) };
                 println!(
-                    "{:>2}.  {:>8}: ({:>5.1}°C --> {:>5.1}°C) {:<20}", 
+                    "{:>2}.  {:>8}: ({} --> {:>5.1}°C) {:<20}", 
                     i + 1, 
                     zone.id,
-                    zone.temperature,
+                    temp_str,
                     zone.target_heat_temperature,
                     zone.name.as_deref().unwrap_or("Unknown")
                 );
@@ -653,11 +721,12 @@ async fn select_zone(client: &Client, location_id: &str, id: Option<String>) -> 
 
     println!("{}", format!("Select a zone in {}:", system.name.as_deref().unwrap_or("Unknown")).bold());
     for (i, zone) in system.zones.iter().enumerate() {
+        let temp_str = if zone.temperature >= 128.0 { "--".to_string() } else { format!("{:>5.1}°C", zone.temperature) };
         println!(
-            "{:>2}.  {:>8}: ({:>5.1}°C --> {:>5.1}°C) {:<20}", 
+            "{:>2}.  {:>8}: ({} --> {:>5.1}°C) {:<20}", 
             i + 1, 
             zone.id,
-            zone.temperature,
+            temp_str,
             zone.target_heat_temperature,
             zone.name.as_deref().unwrap_or("Unknown")
         );

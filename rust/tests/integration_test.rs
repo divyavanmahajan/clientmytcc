@@ -169,7 +169,7 @@ mod temperature_control {
     async fn test_set_temperature_not_authenticated() {
         let client = Client::new();
         let result = client
-            .set_zone_temperature("5211675", 21.5, true, 0, 0)
+            .set_zone_temperature("5211675", 21.5, true, 0, 0, false)
             .await;
 
         assert!(matches!(result, Err(Error::Authentication(_))));
@@ -180,7 +180,7 @@ mod temperature_control {
         let client = Client::new();
         // Test that permanent temperature setting works
         let result = client
-            .set_zone_temperature("5211675", 21.0, true, 0, 0)
+            .set_zone_temperature("5211675", 21.0, true, 0, 0, false)
             .await;
 
         // Should fail due to no authentication, but validates the API
@@ -192,7 +192,7 @@ mod temperature_control {
         let client = Client::new();
         // Test temporary temperature setting (2 hours)
         let result = client
-            .set_zone_temperature("5211675", 22.0, false, 2, 0)
+            .set_zone_temperature("5211675", 22.0, false, 2, 0, false)
             .await;
 
         // Should fail due to no authentication, but validates the API
@@ -316,7 +316,7 @@ mod integration {
 
             // Set to current temperature (no actual change)
             client
-                .set_zone_temperature(&zone.id, current_temp, true, 0, 0)
+                .set_zone_temperature(&zone.id, current_temp, true, 0, 0, false)
                 .await
                 .unwrap();
         }

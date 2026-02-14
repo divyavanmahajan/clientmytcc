@@ -77,6 +77,7 @@ doc/
 
 # IDEs and editors
 .vscode/
+!.vscode/launch.json
 .idea/
 *.swp
 *.swo

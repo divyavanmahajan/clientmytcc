@@ -1,7 +1,7 @@
 //! Data models for the MyTotalConnectComfort API.
 
 use serde::{Deserialize, Deserializer, Serialize};
-use crate::types::SetPointStatus;
+use crate::types::{SetPointStatus, QuickAction};
 
 /// Helper to deserialize null or missing lists as empty vectors
 fn deserialize_null_as_empty<'de, D, T>(deserializer: D) -> Result<Vec<T>, D::Error>
@@ -166,6 +166,10 @@ pub struct Location {
     /// Notification emails
     #[serde(default, deserialize_with = "deserialize_null_as_empty")]
     pub notification_emails: Vec<String>,
+
+    /// System mode status (Quick Actions)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub system_mode_status: Option<SystemModeStatus>,
 }
 
 fn default_heating_system_type() -> u8 {
@@ -221,6 +225,24 @@ pub struct UserInfo {
     /// User language
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_language: Option<i32>,
+}
+
+/// System mode status (Quick Action).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct SystemModeStatus {
+    /// Mode (0=Economy, 1=Away, etc.)
+    pub mode: u8,
+    
+    /// Whether the mode is permanent
+    pub is_permanent: bool,
+}
+
+impl SystemModeStatus {
+    /// Get the mode as a QuickAction enum.
+    pub fn action(&self) -> QuickAction {
+        self.mode.into()
+    }
 }
 
 /// API response wrapper.

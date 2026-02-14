@@ -27,6 +27,42 @@ clientmytcc = "0.1"
 tokio = { version = "1", features = ["full"] }
 ```
 
+## CLI Usage
+The project includes a binary `evohome` for controlling your heating system from the command line.
+
+### Basic Commands
+```bash
+# Login (saves session to ~/.config/clientmytcc/session.json)
+evohome login --email user@example.com
+
+# List locations
+evohome locations
+
+# Monitor all zones
+evohome monitor
+
+# Logout (clears session)
+evohome logout
+```
+
+### Temperature Control
+```bash
+# Set temperature for a specific zone
+evohome set --zone-id "Living Room" --temperature 21.0
+
+# Boost all zones
+evohome boost --temp 22.0 --duration 2
+
+# Enable Eco mode
+evohome eco
+
+# Enable Vacation mode
+evohome vacation --temp 12.0
+
+# Reset all zones to follow schedule
+evohome schedule
+```
+
 ## Quick Start
 
 ```rust
@@ -56,6 +92,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         true,    // permanent
         0,       // hours
         0,       // minutes
+        false,   // is_following_schedule
     ).await?;
 
     Ok(())
@@ -103,6 +140,7 @@ client.set_zone_temperature(
     true,       // permanent
     0,          // hours (ignored when permanent)
     0,          // minutes (ignored when permanent)
+    false,      // is_following_schedule
 ).await?;
 ```
 
@@ -116,6 +154,7 @@ client.set_zone_temperature(
     false,  // not permanent
     2,      // 2 hours
     0,      // 0 minutes
+    false,  // is_following_schedule
 ).await?;
 ```
 

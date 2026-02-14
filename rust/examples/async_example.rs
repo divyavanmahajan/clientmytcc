@@ -39,8 +39,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let zone2_id = &system.zones[1].id;
         
         try_join!(
-            client.set_zone_temperature(zone1_id, 21.0, true, 0, 0),
-            client.set_zone_temperature(zone2_id, 20.0, true, 0, 0)
+            client.set_zone_temperature(zone1_id, 21.0, true, 0, 0, false),
+            client.set_zone_temperature(zone2_id, 20.0, true, 0, 0, false)
         )?;
 
         println!("Setting temperature for zone: {}", system.zones[0].name.as_deref().unwrap_or("Unknown"));

@@ -1,5 +1,6 @@
-"""Utility functions for parsing CLI inputs."""
+"""Utility functions and custom types for the CLI."""
 
+import click
 import re
 from typing import Tuple
 

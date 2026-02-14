@@ -291,6 +291,7 @@ impl Client {
         permanent: bool,
         duration_hours: u32,
         duration_minutes: u32,
+        is_following_schedule: bool,
     ) -> Result<()> {
         self.ensure_authenticated()?;
 
@@ -303,7 +304,7 @@ impl Client {
             set_until_hours: format!("{:02}", duration_hours),
             set_until_minutes: format!("{:02}", duration_minutes),
             location_time_offset_minutes: 60,
-            is_following_schedule: false,
+            is_following_schedule,
         };
 
         let response = self

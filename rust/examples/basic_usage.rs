@@ -80,7 +80,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 example_zone.name.as_deref().unwrap_or("Unknown"), new_temp
             );
             match client
-                .set_zone_temperature(&example_zone.id, new_temp, true, 0, 0)
+                .set_zone_temperature(&example_zone.id, new_temp, true, 0, 0, false)
                 .await
             {
                 Ok(_) => println!("[OK] Temperature set successfully!"),

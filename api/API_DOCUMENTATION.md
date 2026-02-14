@@ -274,7 +274,7 @@ Additionally, POST requests require an `antiForgeryToken` header for CSRF protec
 
 **Endpoint**: `GET /Api/LocationsApi/GetLocationSystem?id={locationId}`
 
-**Description**: Retrieves the heating system configuration and zone status for a location.
+**Description**: Retrieves the heating system configuration and zone status for a location. This does not return the fields for a location (those fields like name, etc. are all null). This also returns the system modes (quick actions possible) configuration and the quick action status.
 
 **Query Parameters**:
 - `id` (required): Location ID
