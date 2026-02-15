@@ -1,6 +1,6 @@
 # Development Guidelines
 
-> **About**: This library provides access to the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). It targets the international API at `international.clientmytcc.com`.
+> **About**: This library provides access to the **International Honeywell Evohome** system, which is provided by **Resideo** (who licensed the Honeywell brand). It targets the international API at `international.evohome_py.com`.
 
 ## Getting Started
 
@@ -14,8 +14,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/divyavanmahajan/clientmytcc.git
-cd clientmytcc/python
+git clone https://github.com/divyavanmahajan/evohome_py.git
+cd evohome_py/python
 
 # Create virtual environment
 python -m venv venv
@@ -41,10 +41,10 @@ Use **Black** for automatic code formatting:
 
 ```bash
 # Format all code
-black clientmytcc/
+black evohome_py/
 
 # Check formatting without changes
-black --check clientmytcc/
+black --check evohome_py/
 ```
 
 ### Type Hints
@@ -98,29 +98,29 @@ def set_zone_temperature(
 
 ```bash
 # Run linter
-flake8 clientmytcc/
+flake8 evohome_py/
 
 # With specific rules
-flake8 --max-line-length=100 clientmytcc/
+flake8 --max-line-length=100 evohome_py/
 ```
 
 ### Type Checking with mypy
 
 ```bash
 # Run type checker
-mypy clientmytcc/
+mypy evohome_py/
 
 # Strict mode
-mypy --strict clientmytcc/
+mypy --strict evohome_py/
 ```
 
 ### Running All Checks
 
 ```bash
 # Format, lint, and type check
-black clientmytcc/ && \
-flake8 clientmytcc/ && \
-mypy clientmytcc/
+black evohome_py/ && \
+flake8 evohome_py/ && \
+mypy evohome_py/
 ```
 
 ## Testing
@@ -132,7 +132,7 @@ mypy clientmytcc/
 pytest
 
 # Run with coverage
-pytest --cov=clientmytcc --cov-report=html
+pytest --cov=evohome_py --cov-report=html
 
 # Run specific test file
 pytest tests/test_client.py
@@ -180,7 +180,7 @@ def login_test():
 
 ```python
 import pytest
-from clientmytcc import Client
+from evohome_py import Client
 
 @pytest.fixture
 def client():
@@ -201,7 +201,7 @@ def mock_response():
 def test_get_locations(client, mock_response, requests_mock):
     """Test getting locations."""
     requests_mock.get(
-        "https://international.clientmytcc.com/api/locationsapi/getlocations",
+        "https://international.evohome_py.com/api/locationsapi/getlocations",
         json=mock_response
     )
     
@@ -219,13 +219,13 @@ def test_login(client, requests_mock):
     """Test login functionality."""
     # Mock login page
     requests_mock.get(
-        "https://international.clientmytcc.com/Account/Login",
+        "https://international.evohome_py.com/Account/Login",
         text="<html></html>"
     )
     
     # Mock login API
     requests_mock.post(
-        "https://international.clientmytcc.com/api/accountApi/login",
+        "https://international.evohome_py.com/api/accountApi/login",
         json={"Content": {"UserId": "123"}}
     )
     
@@ -239,10 +239,10 @@ Target: **>80% coverage**
 
 ```bash
 # Generate coverage report
-pytest --cov=clientmytcc --cov-report=term-missing
+pytest --cov=evohome_py --cov-report=term-missing
 
 # Generate HTML report
-pytest --cov=clientmytcc --cov-report=html
+pytest --cov=evohome_py --cov-report=html
 open htmlcov/index.html
 ```
 
@@ -316,9 +316,9 @@ git commit -m "fixes"
 3. **Run tests and checks**
    ```bash
    pytest
-   black clientmytcc/
-   flake8 clientmytcc/
-   mypy clientmytcc/
+   black evohome_py/
+   flake8 evohome_py/
+   mypy evohome_py/
    ```
 
 4. **Push and create PR**
@@ -337,7 +337,7 @@ git commit -m "fixes"
 
 ```
 python/
-├── clientmytcc/      # Main package
+├── evohome_py/      # Main package
 │   ├── __init__.py            # Package exports
 │   ├── client.py              # API client
 │   ├── models.py              # Data models
@@ -415,7 +415,7 @@ class NewModel:
 def test_new_endpoint(client, requests_mock):
     """Test new endpoint."""
     requests_mock.get(
-        "https://international.clientmytcc.com/api/path",
+        "https://international.evohome_py.com/api/path",
         json={"Content": {"Id": "123", "Name": "Test"}}
     )
     
@@ -448,7 +448,7 @@ Update in both files:
    version = "0.2.0"
    ```
 
-2. `clientmytcc/__init__.py`:
+2. `evohome_py/__init__.py`:
    ```python
    __version__ = "0.2.0"
    ```
@@ -483,7 +483,7 @@ python -m build
 python -m twine upload --repository testpypi dist/*
 
 # Test installation
-pip install --index-url https://test.pypi.org/simple/ clientmytcc
+pip install --index-url https://test.pypi.org/simple/ evohome_py
 ```
 
 ### 4. Publish to PyPI
@@ -575,5 +575,5 @@ ignore_missing_imports = true
 
 - [User Guide](USER_GUIDE.md)
 - [Architecture](ARCHITECTURE.md)
-- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
-- [Discussions](https://github.com/divyavanmahajan/clientmytcc/discussions)
+- [Issue Tracker](https://github.com/divyavanmahajan/evohome_py/issues)
+- [Discussions](https://github.com/divyavanmahajan/evohome_py/discussions)

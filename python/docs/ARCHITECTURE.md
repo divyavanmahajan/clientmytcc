@@ -4,7 +4,7 @@
 
 The MyTotalConnectComfort Python client library provides a clean, type-safe interface to the MyTotalConnectComfort API for the **International Honeywell Evohome** heating system. This system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. The library is designed with simplicity, maintainability, and developer experience in mind.
 
-> **Important**: This library targets the international version of the Evohome system (`international.clientmytcc.com`). North American Honeywell systems may use different APIs.
+> **Important**: This library targets the international version of the Evohome system (`international.evohome_py.com`). North American Honeywell systems may use different APIs.
 
 ## Design Principles
 
@@ -51,7 +51,7 @@ The MyTotalConnectComfort Python client library provides a clean, type-safe inte
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │           MyTotalConnectComfort API (HTTPS)                 │
-│        https://international.clientmytcc.com      │
+│        https://international.evohome_py.com      │
 └─────────────────────────────────────────────────────────────┘
 ```
 

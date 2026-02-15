@@ -3,8 +3,8 @@ import json
 import unittest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
-from clientmytcc.session import save_session, load_session, clear_session, get_session_path, Session
-from clientmytcc.client import Client
+from evohome_py.session import save_session, load_session, clear_session, get_session_path, Session
+from evohome_py.client import Client
 
 class TestSessionManagement(unittest.TestCase):
     def setUp(self):
@@ -43,7 +43,7 @@ class TestSessionManagement(unittest.TestCase):
         self.assertIn("auth=token", loaded_session.cookies)
 
     def test_cookies_to_dict(self):
-        from clientmytcc.session import cookies_to_dict
+        from evohome_py.session import cookies_to_dict
         cookie_list = ["session_id=12345", "auth=token", "complex=val; Path=/"]
         cookies = cookies_to_dict(cookie_list)
         

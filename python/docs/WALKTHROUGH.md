@@ -8,7 +8,7 @@ A Python client library for the MyTotalConnectComfort (Honeywell Evohome) API. T
 
 ```
 python/
-├── clientmytcc/          # Main package directory
+├── evohome_py/          # Main package directory
 │   ├── __init__.py                 # Package initialization
 │   ├── client.py                   # Main API client
 │   ├── models.py                   # Data models
@@ -27,13 +27,13 @@ python/
 
 ### Core Package Files
 
-#### `clientmytcc/__init__.py`
+#### `evohome_py/__init__.py`
 - Exports main `Client` class
 - Exports all exception classes
 - Exports data models (`Zone`, `Location`, `UserInfo`, `Gateway`)
 - Defines package version (`0.1.0`)
 
-#### `clientmytcc/client.py` (Main Client)
+#### `evohome_py/client.py` (Main Client)
 **Key Features:**
 - Session-based authentication with cookie management
 - CSRF token handling for POST requests
@@ -49,7 +49,7 @@ python/
 - Automatic error handling and session management
 - Full type hints for IDE support
 
-#### `clientmytcc/models.py` (Data Models)
+#### `evohome_py/models.py` (Data Models)
 **Type-safe dataclasses:**
 - `Zone` - Heating zone with temperature, status, alerts
 - `Location` - Home with zones, gateways, address
@@ -58,7 +58,7 @@ python/
 - Helper methods: `from_dict()` for API response parsing
 - Convenience methods: `get_zone_by_id()`, `get_zone_by_name()`
 
-#### `clientmytcc/exceptions.py` (Error Handling)
+#### `evohome_py/exceptions.py` (Error Handling)
 **Exception hierarchy:**
 - `MyTotalConnectComfortError` - Base exception
 - `AuthenticationError` - Login failures
@@ -140,7 +140,7 @@ Complete working example demonstrating:
 
 ```bash
 # From PyPI (when published)
-pip install clientmytcc
+pip install evohome_py
 
 # From source
 cd python
@@ -150,7 +150,7 @@ pip install -e .
 ### Basic Usage
 
 ```python
-from clientmytcc import Client
+from evohome_py import Client
 
 client = Client()
 client.login("email@example.com", "password")
@@ -175,13 +175,13 @@ pip install -e ".[dev]"
 
 ```bash
 # Format code
-black clientmytcc/
+black evohome_py/
 
 # Type checking
-mypy clientmytcc/
+mypy evohome_py/
 
 # Linting
-flake8 clientmytcc/
+flake8 evohome_py/
 ```
 
 ## Publishing Workflow
@@ -194,14 +194,14 @@ python -m build
 ```
 
 Creates:
-- `dist/clientmytcc-0.1.0.tar.gz`
-- `dist/clientmytcc-0.1.0-py3-none-any.whl`
+- `dist/evohome_py-0.1.0.tar.gz`
+- `dist/evohome_py-0.1.0-py3-none-any.whl`
 
 ### 2. Test on TestPyPI
 
 ```bash
 python -m twine upload --repository testpypi dist/*
-pip install --index-url https://test.pypi.org/simple/ clientmytcc
+pip install --index-url https://test.pypi.org/simple/ evohome_py
 ```
 
 ### 3. Publish to PyPI
@@ -214,7 +214,7 @@ python -m twine upload dist/*
 
 Update in both files:
 - `pyproject.toml` → `version = "0.2.0"`
-- `clientmytcc/__init__.py` → `__version__ = "0.2.0"`
+- `evohome_py/__init__.py` → `__version__ = "0.2.0"`
 
 ## Key Features Implemented
 

@@ -2,7 +2,7 @@
 
 A Python client library for the **MyTotalConnectComfort** API, which provides access to the **International Honeywell Evohome** heating system. This system is provided by **Resideo**, who licensed the Honeywell brand. Control your heating zones, monitor temperatures, and manage your home heating system programmatically.
 
-> **Note**: This library is designed for the international Evohome system accessible via `international.clientmytcc.com`. North American systems may require different endpoints.
+> **Note**: This library is designed for the international Evohome system accessible via `international.evohome_py.com`. North American systems may require different endpoints.
 
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -22,7 +22,7 @@ A Python client library for the **MyTotalConnectComfort** API, which provides ac
 ### From PyPI (when published)
 
 ```bash
-pip install clientmytcc
+pip install evohome_py
 ```
 
 ### From Source
@@ -38,41 +38,41 @@ The package includes a command-line interface (CLI) for controlling your heating
 
 ### Basic Commands
 ```bash
-# Login (saves session to ~/.config/clientmytcc/session.json)
-clientmytcc login --email user@example.com
+# Login (saves session to ~/.config/evohome_py/session.json)
+evohome_py login --email user@example.com
 
 # List locations
-clientmytcc locations
+evohome_py locations
 
 # Monitor all zones in the first location
-clientmytcc monitor
+evohome_py monitor
 
 # Logout (clears session)
-clientmytcc logout
+evohome_py logout
 ```
 
 ### Temperature Control
 ```bash
 # Set temperature for a specific zone
-clientmytcc set --zone "Living Room" --temp 21.0
+evohome_py set --zone "Living Room" --temp 21.0
 
 # Boost all zones in a location
-clientmytcc boost --temp 22.0 --duration 2
+evohome_py boost --temp 22.0 --duration 2
 
 # Enable Eco mode (lowers temp to 18.0°C)
-clientmytcc eco
+evohome_py eco
 
 # Enable Vacation mode (lowers temp to 12.0°C)
-clientmytcc vacation --temp 12.0
+evohome_py vacation --temp 12.0
 
 # Reset all zones to follow schedule
-clientmytcc schedule
+evohome_py schedule
 ```
 
 ## Quick Start
 
 ```python
-from clientmytcc import Client
+from evohome_py import Client
 
 # Create a client and login
 client = Client()
@@ -104,8 +104,8 @@ client.set_zone_temperature(
 ### Authentication
 
 ```python
-from clientmytcc import Client
-from clientmytcc.exceptions import AuthenticationError
+from evohome_py import Client
+from evohome_py.exceptions import AuthenticationError
 
 client = Client()
 
@@ -312,8 +312,8 @@ Represents user account information.
 
 ```bash
 # Clone the repository
-git clone https://github.com/divyavanmahajan/clientmytcc.git
-cd clientmytcc/python
+git clone https://github.com/divyavanmahajan/evohome_py.git
+cd evohome_py/python
 
 # Create a virtual environment
 python -m venv venv
@@ -327,13 +327,13 @@ pip install -e ".[dev]"
 
 ```bash
 # Format code with black
-black clientmytcc/
+black evohome_py/
 
 # Type checking with mypy
-mypy clientmytcc/
+mypy evohome_py/
 
 # Linting with flake8
-flake8 clientmytcc/
+flake8 evohome_py/
 ```
 
 ### Running Examples
@@ -365,8 +365,8 @@ python -m build
 ```
 
 This creates two files in the `dist/` directory:
-- `clientmytcc-0.1.0.tar.gz` (source distribution)
-- `clientmytcc-0.1.0-py3-none-any.whl` (wheel distribution)
+- `evohome_py-0.1.0.tar.gz` (source distribution)
+- `evohome_py-0.1.0-py3-none-any.whl` (wheel distribution)
 
 ### Test on TestPyPI (Recommended)
 
@@ -375,7 +375,7 @@ This creates two files in the `dist/` directory:
 python -m twine upload --repository testpypi dist/*
 
 # Install from TestPyPI to test
-pip install --index-url https://test.pypi.org/simple/ clientmytcc
+pip install --index-url https://test.pypi.org/simple/ evohome_py
 ```
 
 ### Publish to PyPI
@@ -416,7 +416,7 @@ Update version in `pyproject.toml`:
 version = "0.2.0"
 ```
 
-Also update in `clientmytcc/__init__.py`:
+Also update in `evohome_py/__init__.py`:
 ```python
 __version__ = "0.2.0"
 ```
@@ -447,7 +447,7 @@ Use this library at your own risk.
 
 - [API Documentation](../api/API_DOCUMENTATION.md)
 - [OpenAPI Specification](../api/openapi-spec.yaml)
-- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
+- [Issue Tracker](https://github.com/divyavanmahajan/evohome_py/issues)
 
 ## Acknowledgments
 

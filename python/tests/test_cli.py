@@ -3,12 +3,12 @@
 import pytest
 from click.testing import CliRunner
 from unittest.mock import MagicMock, patch
-from clientmytcc.cli import cli
-from clientmytcc.models import Zone, Location, LocationSystem
+from evohome_py.cli import cli
+from evohome_py.models import Zone, Location, LocationSystem
 
 @pytest.fixture
 def mock_client():
-    with patch('clientmytcc.cli._get_authenticated_client') as mock:
+    with patch('evohome_py.cli._get_authenticated_client') as mock:
         client = MagicMock()
         mock.return_value = client
         yield client

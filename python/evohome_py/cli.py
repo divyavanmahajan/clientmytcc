@@ -205,11 +205,11 @@ def set(zone_id: Optional[str], temperature: Optional[float], duration: Optional
         
         if permanent:
             rprint(f"[green][OK][/green] Set zone {zone_id} to {temperature}°C (permanent)")
-            rprint(f"[dim]Command to skip selection: clientmytcc set {zone_id} {temperature}C[/dim]")
+            rprint(f"[dim]Command to skip selection: evohome_py set {zone_id} {temperature}C[/dim]")
         else:
             total_mins = hours * 60 + minutes
             rprint(f"[green][OK][/green] Set zone {zone_id} to {temperature}°C for {total_mins} minutes")
-            rprint(f"[dim]Command to skip selection: clientmytcc set {zone_id} {temperature}C --duration {hours}h{minutes}m[/dim]")
+            rprint(f"[dim]Command to skip selection: evohome_py set {zone_id} {temperature}C --duration {hours}h{minutes}m[/dim]")
     except MyTotalConnectComfortError as e:
         rprint(f"[red][ERROR][/red] {e}")
         sys.exit(1)
@@ -499,7 +499,7 @@ def _get_authenticated_client() -> Client:
         email = os.environ.get("EVOHOME_USER") or os.environ.get("EVOHOME_EMAIL")
     
     if not email:
-        rprint("[red][ERROR][/red] Not logged in. Run 'clientmytcc login' or set EVOHOME_USER/EVOHOME_PASSWORD.")
+        rprint("[red][ERROR][/red] Not logged in. Run 'evohome_py login' or set EVOHOME_USER/EVOHOME_PASSWORD.")
         sys.exit(1)
     
     # Try to get password from env
@@ -508,7 +508,7 @@ def _get_authenticated_client() -> Client:
     if not password:
         # If no password in env, we can't auto-login without session persistence
         rprint("[red][ERROR][/red] Session expired and EVOHOME_PASSWORD not set.")
-        rprint("[yellow]Please run 'clientmytcc login' or set EVOHOME_PASSWORD.[/yellow]")
+        rprint("[yellow]Please run 'evohome_py login' or set EVOHOME_PASSWORD.[/yellow]")
         sys.exit(1)
         
     try:

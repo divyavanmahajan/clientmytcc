@@ -14,7 +14,7 @@ class Session:
 
 def get_session_path() -> Path:
     """Get the path to the session file."""
-    config_dir = Path.home() / ".config" / "clientmytcc"
+    config_dir = Path.home() / ".config" / "evohome_py"
     config_dir.mkdir(parents=True, exist_ok=True)
     return config_dir / "session.json"
 

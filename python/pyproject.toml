@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "clientmytcc"
+name = "evohome_py"
 version = "0.1.0"
 description = "Python client library for the International Honeywell Evohome API (MyTotalConnectComfort) provided by Resideo"
 readme = "README.md"
@@ -35,7 +35,7 @@ dependencies = [
 ]
 
 [project.scripts]
-evohome = "clientmytcc.cli:cli"
+evohome = "evohome_py.cli:cli"
 
 [project.optional-dependencies]
 dev = [
@@ -55,7 +55,7 @@ Issues = "https://github.com/divyavanmahajan/mytotalconnectcomfort/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["mytotalconnectcomfort*"]
+include = ["evohome_py*"]
 
 [tool.black]
 line-length = 100

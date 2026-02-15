@@ -11,8 +11,8 @@ import os
 import time
 import pytest
 from click.testing import CliRunner
-from clientmytcc import Client
-from clientmytcc.cli import cli
+from evohome_py import Client
+from evohome_py.cli import cli
 
 
 @pytest.fixture

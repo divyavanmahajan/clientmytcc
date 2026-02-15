@@ -1,7 +1,7 @@
 """Tests for data models."""
 
 import pytest
-from clientmytcc.models import Zone, Location, UserInfo, Gateway
+from evohome_py.models import Zone, Location, UserInfo, Gateway
 
 
 class TestZone:

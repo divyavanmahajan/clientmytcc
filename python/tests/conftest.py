@@ -1,7 +1,7 @@
 """Test configuration and shared fixtures."""
 
 import pytest
-from clientmytcc import Client
+from evohome_py import Client
 
 
 @pytest.fixture

@@ -2,8 +2,8 @@
 Basic usage example for the MyTotalConnectComfort API client.
 """
 
-from clientmytcc import Client
-from clientmytcc.exceptions import (
+from evohome_py import Client
+from evohome_py.exceptions import (
     AuthenticationError,
     APIError,
     ZoneNotFoundError,

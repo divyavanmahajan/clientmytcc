@@ -4,7 +4,7 @@
 
 Welcome to the MyTotalConnectComfort Python Client Library! This guide will help you get started with controlling your **International Honeywell Evohome** heating system programmatically.
 
-> **About the System**: The Evohome system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. This library is specifically designed for the international version accessible via `international.clientmytcc.com`. If you have a North American Honeywell system, it may use different endpoints.
+> **About the System**: The Evohome system is provided by **Resideo**, who licensed the Honeywell brand from Honeywell International. This library is specifically designed for the international version accessible via `international.evohome_py.com`. If you have a North American Honeywell system, it may use different endpoints.
 
 ## Table of Contents
 
@@ -24,21 +24,21 @@ Welcome to the MyTotalConnectComfort Python Client Library! This guide will help
 ### From PyPI
 
 ```bash
-pip install clientmytcc
+pip install evohome_py
 ```
 
 ### From Source
 
 ```bash
-git clone https://github.com/divyavanmahajan/clientmytcc.git
-cd clientmytcc/python
+git clone https://github.com/divyavanmahajan/evohome_py.git
+cd evohome_py/python
 pip install -e .
 ```
 
 ### Verify Installation
 
 ```python
-python -c "from clientmytcc import Client; print('Installation successful!')"
+python -c "from evohome_py import Client; print('Installation successful!')"
 ```
 
 ## Quick Start
@@ -46,7 +46,7 @@ python -c "from clientmytcc import Client; print('Installation successful!')"
 Here's a complete example to get you started:
 
 ```python
-from clientmytcc import Client
+from evohome_py import Client
 
 # Create and authenticate
 client = Client()
@@ -77,8 +77,8 @@ client.set_zone_temperature(
 ### Basic Login
 
 ```python
-from clientmytcc import Client
-from clientmytcc.exceptions import AuthenticationError
+from evohome_py import Client
+from evohome_py.exceptions import AuthenticationError
 
 client = Client()
 
@@ -108,7 +108,7 @@ system = client.get_location_system(locations[0].id)
 Sessions expire after 1 hour. If you get a `SessionExpiredError`, simply login again:
 
 ```python
-from clientmytcc.exceptions import SessionExpiredError
+from evohome_py.exceptions import SessionExpiredError
 
 try:
     locations = client.get_locations()
@@ -171,7 +171,7 @@ for zone in system.zones:
 ### Get Zone by ID
 
 ```python
-from clientmytcc.exceptions import ZoneNotFoundError
+from evohome_py.exceptions import ZoneNotFoundError
 
 try:
     zone = client.get_zone(location_id="1232176", zone_id="5211675")
@@ -276,8 +276,8 @@ else:
 ### Comprehensive Error Handling
 
 ```python
-from clientmytcc import Client
-from clientmytcc.exceptions import (
+from evohome_py import Client
+from evohome_py.exceptions import (
     AuthenticationError,
     APIError,
     ZoneNotFoundError,
@@ -568,4 +568,4 @@ with ThreadPoolExecutor(max_workers=5) as executor:
 - [API Documentation](../../api/API_DOCUMENTATION.md)
 - [Architecture](ARCHITECTURE.md)
 - [Development Guidelines](DEVELOPMENT.md)
-- [Issue Tracker](https://github.com/divyavanmahajan/clientmytcc/issues)
+- [Issue Tracker](https://github.com/divyavanmahajan/evohome_py/issues)

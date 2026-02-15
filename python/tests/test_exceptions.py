@@ -1,7 +1,7 @@
 """Tests for custom exceptions."""
 
 import pytest
-from clientmytcc.exceptions import (
+from evohome_py.exceptions import (
     MyTotalConnectComfortError,
     AuthenticationError,
     APIError,
