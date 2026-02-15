@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Publish evohome_rs to PyPI
 
 on:
   push:

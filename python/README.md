@@ -29,7 +29,7 @@ pip install evohome_py
 
 ```bash
 git clone https://github.com/divyavanmahajan/clientmytcc.git
-cd clientmytcc/python
+cd evohome_py/python
 pip install -e .
 ```
 

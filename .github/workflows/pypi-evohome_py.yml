@@ -1,4 +1,4 @@
-name: Publish to PyPI
+name: Publish evohome_py to PyPI
 
 on:
   release:
