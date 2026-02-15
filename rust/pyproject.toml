@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "evohome_rs"
-version = "0.2.0"
+version = "0.2.1"
 description = "MyTotalConnectComfort CLI for Evohome heating control (Rust implementation)"
 requires-python = ">=3.7"
 authors = [

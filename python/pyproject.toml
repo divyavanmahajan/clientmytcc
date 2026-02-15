@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "evohome_py"
-version = "0.2.0"
+version = "0.2.1"
 description = "Python client library for the International Honeywell Evohome API (MyTotalConnectComfort) provided by Resideo"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -36,6 +36,7 @@ dependencies = [
 
 [project.scripts]
 evohome = "evohome_py.cli:cli"
+evohome_py = "evohome_py.cli:cli"
 
 [project.optional-dependencies]
 dev = [
